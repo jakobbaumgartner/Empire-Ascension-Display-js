@@ -1,15 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>My Web Page</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-    <h1>Welcome to My Web Page</h1>
-    
-    <p>This is a sample paragraph.</p>
-    
-    <script src="pixicanvas.js"></script>
-</body>
+<!doctype html>
+<html>
+  <head>
+    <script src="https://pixijs.download/release/pixi.min.js"></script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module">
+      // Create the application helper and add its render target to the page
+      const app = new PIXI.Application();
+      await app.init({ background: '#1099bb' });
+    document.getElementById("app").appendChild(app.view);
+
+      // Create the sprite and add it to the stage
+      await PIXI.Assets.load('sample.png');
+      let sprite = PIXI.Sprite.from('sample.png');
+      app.stage.addChild(sprite);
+
+      // Add a ticker callback to move the sprite back and forth
+      let elapsed = 0.0;
+      app.ticker.add((ticker) => {
+        elapsed += ticker.deltaTime;
+        sprite.y = 100.0 + Math.cos(elapsed/50.0) * 100.0;
+      });
+    </script>
+  </body>
 </html>
