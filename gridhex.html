@@ -50,6 +50,13 @@
             app.stage.addChildAt(background, 0);
         });
 
+        const loader = new PIXI.Loader();
+
+
+        loader.add('soldier_green_ak', 'soldier_green_ak.png');
+        loader.add('soldier_green_pistol', 'soldier_green_pistol.png');
+        loader.add('soldier_green_shotgun', 'soldier_green_shotgun.png');
+
         const hexRadius = 15;
         const hexHeight = hexRadius * Math.sqrt(3);
         const hexWidth = hexRadius * 2;
@@ -101,21 +108,21 @@
             hexagon.buttonMode = true;
             hexagon.clicked = false;
 
-            hexagon.on('pointerdown', () => {
-                hexagon.clear();
-                hexagon.beginFill(0xFF0000);
-                hexagon.lineStyle(1, 0x000000);
-                hexagon.drawPolygon([
-                    -hexRadius, 0,
-                    -hexRadius / 2, hexHeight / 2,
-                    hexRadius / 2, hexHeight / 2,
-                    hexRadius, 0,
-                    hexRadius / 2, -hexHeight / 2,
-                    -hexRadius / 2, -hexHeight / 2
-                ]);
-                hexagon.endFill();
-                hexagon.clicked = true;
-            });
+            // hexagon.on('pointerdown', () => {
+            //     hexagon.clear();
+            //     hexagon.beginFill(0xFF0000);
+            //     hexagon.lineStyle(1, 0x000000);
+            //     hexagon.drawPolygon([
+            //         -hexRadius, 0,
+            //         -hexRadius / 2, hexHeight / 2,
+            //         hexRadius / 2, hexHeight / 2,
+            //         hexRadius, 0,
+            //         hexRadius / 2, -hexHeight / 2,
+            //         -hexRadius / 2, -hexHeight / 2
+            //     ]);
+            //     hexagon.endFill();
+            //     hexagon.clicked = true;
+            // });
 
             return hexagon;
         }
@@ -163,7 +170,25 @@
             isDragging = true;
             dragStartX = event.data.global.x - hexContainer.x;
             dragStartY = event.data.global.y - hexContainer.y;
+
+            loader.load((loader, resources) => {
+                // Create a sprite from the loaded texture
+                const soldier = new PIXI.Sprite(resources.soldier_green_ak.texture);
+
+                // Make the soldier smaller
+                soldier.scale.set(0.05, 0.05); // Adjust the scale as needed
+
+                // Position the soldier at the mouse position relative to the hexContainer
+                const localPos = event.data.getLocalPosition(hexContainer);
+                soldier.x = localPos.x;
+                soldier.y = localPos.y;
+                soldier.anchor.set(0.5, 0.5); // Rotate around the center
+
+                // Append the soldier to the hexContainer, so it moves with the hexagons
+                hexContainer.addChild(soldier);
+            });
         });
+
 
         hexContainer.on('mouseup', () => {
             isDragging = false;
