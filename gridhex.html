@@ -23,11 +23,32 @@
         const app = new PIXI.Application({
             width: window.innerWidth,
             height: window.innerHeight,
-            backgroundColor: 0x87CEEB,
             resolution: window.devicePixelRatio || 1,
         });
 
         document.getElementById('hexCanvas').appendChild(app.view);
+
+        const hexContainer = new PIXI.Container();
+        app.stage.addChild(hexContainer);
+
+        // Load the background image
+        PIXI.Loader.shared.add('background', 'background.jpg').load((loader, resources) => {
+            // Create a sprite from the loaded texture
+            const background = new PIXI.Sprite(resources.background.texture);
+
+            // Calculate the scale to fit the entire image within the app's dimensions
+            const scaleX = app.renderer.width / background.texture.width;
+            const scaleY = app.renderer.height / background.texture.height;
+            const scale = Math.min(scaleX, scaleY);
+
+            // Scale and center the background
+            background.scale.set(0.8);
+            background.x = 0  //(app.renderer.width - background.width) / 2;
+            background.y = 0 //(app.renderer.height - background.height) / 2;
+
+            // Add the background sprite to the stage and make sure it's behind other elements
+            app.stage.addChildAt(background, 0);
+        });
 
         const hexRadius = 15;
         const hexHeight = hexRadius * Math.sqrt(3);
@@ -35,9 +56,6 @@
 
         const gridWidth = 250;
         const gridHeight = 100;
-
-        const hexContainer = new PIXI.Container();
-        app.stage.addChild(hexContainer);
 
         const terrainTypes = {
             water: 0x5B99C2,
