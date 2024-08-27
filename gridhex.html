@@ -53,9 +53,16 @@
         const loader = new PIXI.Loader();
 
 
-        loader.add('soldier_green_ak', 'soldier_green_ak.png');
-        loader.add('soldier_green_pistol', 'soldier_green_pistol.png');
-        loader.add('soldier_green_shotgun', 'soldier_green_shotgun.png');
+        // loader.add('soldier_green_ak', 'soldier_green_ak.png');
+        // loader.add('soldier_green_pistol', 'soldier_green_pistol.png');
+        // loader.add('soldier_green_shotgun', 'soldier_green_shotgun.png');
+
+        // Load every image from array
+        const soldiers = ['soldeier_ak47', 'soldier_bomb_squad', 'soldier_german','soldier_indian','soldier_jack_the_knife','soldier_old_ak47', 'soldier_pistol', 'soldier_shotgun', 'soldier_winter', 'soldier_young'];
+
+        soldiers.forEach((soldier) => {
+            loader.add(soldier, `${soldier}.png`);
+        });
 
         const hexRadius = 15;
         const hexHeight = hexRadius * Math.sqrt(3);
@@ -173,10 +180,11 @@
 
             loader.load((loader, resources) => {
                 // Create a sprite from the loaded texture
-                const soldier = new PIXI.Sprite(resources.soldier_green_ak.texture);
+                const randomSoldier = soldiers[Math.floor(Math.random() * soldiers.length)];
+                const soldier = new PIXI.Sprite(resources[randomSoldier].texture);
 
                 // Make the soldier smaller
-                soldier.scale.set(0.05, 0.05); // Adjust the scale as needed
+                soldier.scale.set(0.2, 0.2); // Adjust the scale as needed
 
                 // Position the soldier at the mouse position relative to the hexContainer
                 const localPos = event.data.getLocalPosition(hexContainer);
