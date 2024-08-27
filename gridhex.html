@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PixiJS Hexagon Grid - Fullscreen</title>
+    <title>PixiJS Hexagon Grid</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.3.3/pixi.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
     <style>
@@ -20,57 +20,48 @@
 <body>
     <div id="hexCanvas"></div>
     <script>
-        // Create a PixiJS application
         const app = new PIXI.Application({
             width: window.innerWidth,
             height: window.innerHeight,
-            backgroundColor: 0x87CEEB, // Changed to a soft sky blue color
+            backgroundColor: 0x87CEEB,
             resolution: window.devicePixelRatio || 1,
         });
 
-        // Add the canvas to the HTML document
         document.getElementById('hexCanvas').appendChild(app.view);
 
-        // Hexagon properties
         const hexRadius = 15;
         const hexHeight = hexRadius * Math.sqrt(3);
         const hexWidth = hexRadius * 2;
 
-        // Grid properties
         const gridWidth = 250;
         const gridHeight = 100;
 
-        // Create a container for the hexagons
         const hexContainer = new PIXI.Container();
         app.stage.addChild(hexContainer);
 
-        // Terrain types and their colors
         const terrainTypes = {
-            water: 0x5B99C2,   // Blue (Rivers, Lakes)
-            beach: 0xF9DBBA,   // Yellow (Beaches)
-            grass: 0xCBE2B5,   // Light Green (Grasslands)
-            forest: 0x86AB89,  // Green (Forests)
-            mountain: 0xA28B55 // Brown (Mountains)
+            water: 0x5B99C2,
+            beach: 0xF9DBBA,
+            grass: 0xCBE2B5,
+            forest: 0x86AB89,
+            mountain: 0xA28B55
         };
 
-        // Create simplex noise generator
         const noise = new SimplexNoise();
 
-        // Function to map noise values to terrain
         function getTerrainType(noiseValue) {
-            if (noiseValue < -0.3) return 'water';   // Deep water
-            if (noiseValue < -0.1) return 'beach';   // Beach
-            if (noiseValue < 0.2) return 'grass';    // Grass
-            if (noiseValue < 0.5) return 'forest';   // Forest
-            return 'mountain';                       // Mountain
+            if (noiseValue < -0.3) return 'water';
+            if (noiseValue < -0.1) return 'beach';
+            if (noiseValue < 0.2) return 'grass';
+            if (noiseValue < 0.5) return 'forest';
+            return 'mountain';
         }
 
-        // Function to create a hexagon with Perlin noise-based terrain
         function createHexagon(x, y, i, j, k) {
             const hexagon = new PIXI.Graphics();
-            const noiseValue = noise.noise2D(i * 0.05, j * 0.05); // Generate noise for this hexagon
-            const terrain = getTerrainType(noiseValue); // Get terrain based on noise value
-            hexagon.beginFill(terrainTypes[terrain]); // Set the fill color based on terrain
+            const noiseValue = noise.noise2D(i * 0.05, j * 0.05);
+            const terrain = getTerrainType(noiseValue);
+            hexagon.beginFill(terrainTypes[terrain]);
             hexagon.lineStyle(1, 0x000000);
             hexagon.drawPolygon([
                 -hexRadius, 0,
@@ -86,17 +77,16 @@
             hexagon.i = i;
             hexagon.j = j;
             hexagon.k = k;
-            hexagon.terrain = terrain; // Store the terrain type
+            hexagon.terrain = terrain;
 
             hexagon.interactive = true;
             hexagon.buttonMode = true;
-            hexagon.clicked = false; // New property to track if the hexagon was clicked
+            hexagon.clicked = false;
 
-            // Add click event to hexagon
             hexagon.on('pointerdown', () => {
-                hexagon.clear(); // Clear the previous drawing
-                hexagon.beginFill(0xFF0000); // Set to bright red
-                hexagon.lineStyle(1, 0x000000); // Keep the border
+                hexagon.clear();
+                hexagon.beginFill(0xFF0000);
+                hexagon.lineStyle(1, 0x000000);
                 hexagon.drawPolygon([
                     -hexRadius, 0,
                     -hexRadius / 2, hexHeight / 2,
@@ -106,13 +96,12 @@
                     -hexRadius / 2, -hexHeight / 2
                 ]);
                 hexagon.endFill();
-                hexagon.clicked = true; // Mark it as clicked
+                hexagon.clicked = true;
             });
 
             return hexagon;
         }
 
-        // Generate the hexagon grid with Perlin noise-based terrain
         for (let row = 0; row < gridHeight; row++) {
             for (let col = 0; col < gridWidth; col++) {
                 const x = col * hexWidth * 0.75;
@@ -125,81 +114,30 @@
             }
         }
 
-        // Variable to keep track of the last highlighted hexagon
         let lastHighlighted = null;
 
-        // Add interactivity to the hexagon container
         hexContainer.interactive = true;
         hexContainer.on('mousemove', (event) => {
             const pos = event.data.getLocalPosition(hexContainer);
-            // Adjust the calculation to properly account for the staggered grid
-            const col = Math.round(pos.x / (hexWidth * 0.75)); // Use round to get closest column
-            const row = Math.round((pos.y - (col % 2) * (hexHeight / 2)) / hexHeight); // Adjust for the staggered rows
+            const col = Math.round(pos.x / (hexWidth * 0.75));
+            const row = Math.round((pos.y - (col % 2) * (hexHeight / 2)) / hexHeight);
             
             if (col >= 0 && col < gridWidth && row >= 0 && row < gridHeight) {
                 const index = row * gridWidth + col;
                 const hexagon = hexContainer.children[index];
 
-                // Reset the last highlighted hexagon, if not clicked
                 if (lastHighlighted && lastHighlighted !== hexagon && !lastHighlighted.clicked) {
                     lastHighlighted.tint = 0xffffff;
                 }
 
-                // Highlight the current hexagon if it hasn't been clicked
                 if (!hexagon.clicked) {
                     hexagon.tint = 0xff0000;
                 }
 
                 lastHighlighted = hexagon;
-
-                coordText.text = `Terrain: ${hexagon.terrain} | [${hexagon.i}, ${hexagon.j}]`;
             }
         });
 
-        hexContainer.on('mouseout', () => {
-            coordText.text = 'Hover over the grid';
-            if (lastHighlighted && !lastHighlighted.clicked) {
-                lastHighlighted.tint = 0xffffff;
-                lastHighlighted = null;
-            }
-        });
-
-    // Create text for displaying coordinates
-    const coordText = new PIXI.Text('Hover over the grid', {
-        fontFamily: 'Arial',
-        fontSize: 24,
-        fill: 0x000000, // Black text for visibility
-        align: 'center',
-        dropShadow: true, // Add shadow
-        dropShadowColor: '#000000', // Shadow color
-        dropShadowBlur: 4, // Shadow blur
-        dropShadowDistance: 4, // Shadow distance
-    });
-
-    // Create a background rectangle with curved edges and a black border
-    const textBackground = new PIXI.Graphics();
-    textBackground.lineStyle(2, 0x000000); // Black border
-    textBackground.beginFill(0xFFFFFF, 0.85); // White with 50% opacity
-    textBackground.drawRoundedRect(-225, -30, 450, 60, 15); // Curved corners, increased width by 50%
-    textBackground.endFill();
-
-    // Add the background to the stage first (behind the text)
-    app.stage.addChild(textBackground);
-
-    // Position and add the text on top of the background
-    coordText.anchor.set(0.5);
-    coordText.x = app.screen.width / 2;
-    coordText.y = app.screen.height - 50;
-
-    // Position the background behind the text
-    textBackground.x = coordText.x;
-    textBackground.y = coordText.y;
-
-    // Add the text after the background so it's rendered on top
-    app.stage.addChild(coordText);
-
-
-        // Add zoom and pan functionality
         let isDragging = false;
         let dragStartX, dragStartY;
 
@@ -220,21 +158,23 @@
             }
         });
 
-        // Zoom with mouse wheel
         document.addEventListener('wheel', (event) => {
             event.preventDefault();
+
+            const mousePos = app.renderer.plugins.interaction.mouse.global;
+            const worldPosBeforeZoom = hexContainer.toLocal(mousePos);
+
             const zoomFactor = event.deltaY > 0 ? 0.9 : 1.1;
             hexContainer.scale.x *= zoomFactor;
             hexContainer.scale.y *= zoomFactor;
+
+            const worldPosAfterZoom = hexContainer.toLocal(mousePos);
+            hexContainer.x += (worldPosAfterZoom.x - worldPosBeforeZoom.x) * hexContainer.scale.x;
+            hexContainer.y += (worldPosAfterZoom.y - worldPosBeforeZoom.y) * hexContainer.scale.y;
         });
 
-        // Handle window resize
         window.addEventListener('resize', () => {
             app.renderer.resize(window.innerWidth, window.innerHeight);
-            textBackground.x = app.screen.width / 2;
-            textBackground.y = app.screen.height - 50;
-            coordText.x = app.screen.width / 2;
-            coordText.y = app.screen.height - 50;
         });
     </script>
 </body>
