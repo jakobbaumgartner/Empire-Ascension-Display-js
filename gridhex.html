@@ -6,6 +6,7 @@
     <title>PixiJS Hexagon Grid</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.3.3/pixi.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
+    <script src="hexagonalGrid.js"></script> <!-- Importing the new JS file -->
     <style>
         body {
             margin: 0;
@@ -33,118 +34,26 @@
 
         // Load the background image
         PIXI.Loader.shared.add('background', 'background.jpg').load((loader, resources) => {
-            // Create a sprite from the loaded texture
             const background = new PIXI.Sprite(resources.background.texture);
-
-            // Calculate the scale to fit the entire image within the app's dimensions
             const scaleX = app.renderer.width / background.texture.width;
             const scaleY = app.renderer.height / background.texture.height;
             const scale = Math.min(scaleX, scaleY);
 
-            // Scale and center the background
             background.scale.set(0.8);
-            background.x = 0  //(app.renderer.width - background.width) / 2;
-            background.y = 0 //(app.renderer.height - background.height) / 2;
+            background.x = 0;
+            background.y = 0;
 
-            // Add the background sprite to the stage and make sure it's behind other elements
             app.stage.addChildAt(background, 0);
         });
 
         const loader = new PIXI.Loader();
-
-
-        // loader.add('soldier_green_ak', 'soldier_green_ak.png');
-        // loader.add('soldier_green_pistol', 'soldier_green_pistol.png');
-        // loader.add('soldier_green_shotgun', 'soldier_green_shotgun.png');
-
-        // Load every image from array
         const soldiers = ['soldeier_ak47', 'soldier_bomb_squad', 'soldier_german','soldier_indian','soldier_jack_the_knife','soldier_old_ak47', 'soldier_pistol', 'soldier_shotgun', 'soldier_winter', 'soldier_young'];
 
         soldiers.forEach((soldier) => {
             loader.add(soldier, `${soldier}.png`);
         });
 
-        const hexRadius = 15;
-        const hexHeight = hexRadius * Math.sqrt(3);
-        const hexWidth = hexRadius * 2;
-
-        const gridWidth = 250;
-        const gridHeight = 100;
-
-        const terrainTypes = {
-            water: 0x5B99C2,
-            beach: 0xF9DBBA,
-            grass: 0xCBE2B5,
-            forest: 0x86AB89,
-            mountain: 0xA28B55
-        };
-
-        const noise = new SimplexNoise();
-
-        function getTerrainType(noiseValue) {
-            if (noiseValue < -0.3) return 'water';
-            if (noiseValue < -0.1) return 'beach';
-            if (noiseValue < 0.2) return 'grass';
-            if (noiseValue < 0.5) return 'forest';
-            return 'mountain';
-        }
-
-        function createHexagon(x, y, i, j, k) {
-            const hexagon = new PIXI.Graphics();
-            const noiseValue = noise.noise2D(i * 0.05, j * 0.05);
-            const terrain = getTerrainType(noiseValue);
-            hexagon.beginFill(terrainTypes[terrain]);
-            hexagon.lineStyle(1, 0x000000);
-            hexagon.drawPolygon([
-                -hexRadius, 0,
-                -hexRadius / 2, hexHeight / 2,
-                hexRadius / 2, hexHeight / 2,
-                hexRadius, 0,
-                hexRadius / 2, -hexHeight / 2,
-                -hexRadius / 2, -hexHeight / 2
-            ]);
-            hexagon.endFill();
-            hexagon.x = x;
-            hexagon.y = y;
-            hexagon.i = i;
-            hexagon.j = j;
-            hexagon.k = k;
-            hexagon.terrain = terrain;
-
-            hexagon.interactive = true;
-            hexagon.buttonMode = true;
-            hexagon.clicked = false;
-
-            // hexagon.on('pointerdown', () => {
-            //     hexagon.clear();
-            //     hexagon.beginFill(0xFF0000);
-            //     hexagon.lineStyle(1, 0x000000);
-            //     hexagon.drawPolygon([
-            //         -hexRadius, 0,
-            //         -hexRadius / 2, hexHeight / 2,
-            //         hexRadius / 2, hexHeight / 2,
-            //         hexRadius, 0,
-            //         hexRadius / 2, -hexHeight / 2,
-            //         -hexRadius / 2, -hexHeight / 2
-            //     ]);
-            //     hexagon.endFill();
-            //     hexagon.clicked = true;
-            // });
-
-            return hexagon;
-        }
-
-        for (let row = 0; row < gridHeight; row++) {
-            for (let col = 0; col < gridWidth; col++) {
-                const x = col * hexWidth * 0.75;
-                const y = row * hexHeight + (col % 2) * (hexHeight / 2);
-                const i = col;
-                const j = row - Math.floor(col / 2);
-                const k = -i - j;
-                const hexagon = createHexagon(x, y, i, j, k);
-                hexContainer.addChild(hexagon);
-            }
-        }
+        createHexagonalGrid(hexContainer); // Using the function from hexagonalGrid.js
 
         let lastHighlighted = null;
 
@@ -179,24 +88,19 @@
             dragStartY = event.data.global.y - hexContainer.y;
 
             loader.load((loader, resources) => {
-                // Create a sprite from the loaded texture
                 const randomSoldier = soldiers[Math.floor(Math.random() * soldiers.length)];
                 const soldier = new PIXI.Sprite(resources[randomSoldier].texture);
 
-                // Make the soldier smaller
-                soldier.scale.set(0.2, 0.2); // Adjust the scale as needed
+                soldier.scale.set(0.2, 0.2);
 
-                // Position the soldier at the mouse position relative to the hexContainer
                 const localPos = event.data.getLocalPosition(hexContainer);
                 soldier.x = localPos.x;
                 soldier.y = localPos.y;
-                soldier.anchor.set(0.5, 0.5); // Rotate around the center
+                soldier.anchor.set(0.5, 0.5);
 
-                // Append the soldier to the hexContainer, so it moves with the hexagons
                 hexContainer.addChild(soldier);
             });
         });
-
 
         hexContainer.on('mouseup', () => {
             isDragging = false;
