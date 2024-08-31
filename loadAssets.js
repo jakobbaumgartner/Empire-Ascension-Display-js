@@ -42,6 +42,8 @@ loadBattleUnits().then(() => {
             // Create a unit card
             const unitCard = document.createElement('div');
             unitCard.classList.add('unit-card');
+            unitCard.classList.add('unselectable')
+            unitCard.id = ('card-'+unit.unit_id);
 
             // Create an image element for the unit
             const unitImage = document.createElement('img');
@@ -69,6 +71,15 @@ loadBattleUnits().then(() => {
             unitCard.appendChild(unitName);
             unitCard.appendChild(unitCost);
             unitCard.appendChild(monthlyExpense);
+
+            unitCard.addEventListener('click', function() {
+                console.log(unit.unit_id);
+                console.log(selected);
+                selected = unit.unit_id;
+
+                // Display unit stats in right menu
+                displayUnitStats(unit) 
+            });
 
 
             unitContainer.appendChild(unitCard);
