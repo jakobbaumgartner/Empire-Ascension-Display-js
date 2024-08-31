@@ -1,0 +1,10 @@
+        /* Resetting margins, padding, and hiding scrollbars */
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        /* Styling the container for the PixiJS canvas */
+        #hexCanvas {
+            display: block;
+        }

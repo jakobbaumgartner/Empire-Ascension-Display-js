@@ -4,133 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PixiJS Hexagon Grid</title>
+    <!-- Importing the PixiJS library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.3.3/pixi.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
-    <script src="hexagonalGrid.js"></script> <!-- Importing the new JS file -->
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
-        #hexCanvas {
-            display: block;
-        }
-    </style>
+    <!-- Importing the Simplex Noise library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>  
+    <!-- Import stylesheet-->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- The container for the PixiJS application -->
     <div id="hexCanvas"></div>
+    <!-- Importing the custom hexagonal grid script -->
+    <script src="hexagonalGrid.js"></script>
+    <!-- Importing the custom script that will create the hexagonal grid world-->
+    <script src="pixijsWorld.js"></script>
+
+    
     <script>
-        const app = new PIXI.Application({
-            width: window.innerWidth,
-            height: window.innerHeight,
-            resolution: window.devicePixelRatio || 1,
-        });
-
-        document.getElementById('hexCanvas').appendChild(app.view);
-
-        const hexContainer = new PIXI.Container();
-        app.stage.addChild(hexContainer);
-
-        // Load the background image
-        PIXI.Loader.shared.add('background', 'background.jpg').load((loader, resources) => {
-            const background = new PIXI.Sprite(resources.background.texture);
-            const scaleX = app.renderer.width / background.texture.width;
-            const scaleY = app.renderer.height / background.texture.height;
-            const scale = Math.min(scaleX, scaleY);
-
-            background.scale.set(0.8);
-            background.x = 0;
-            background.y = 0;
-
-            app.stage.addChildAt(background, 0);
-        });
-
-        const loader = new PIXI.Loader();
-        const soldiers = ['soldeier_ak47', 'soldier_bomb_squad', 'soldier_german','soldier_indian','soldier_jack_the_knife','soldier_old_ak47', 'soldier_pistol', 'soldier_shotgun', 'soldier_winter', 'soldier_young'];
-
-        soldiers.forEach((soldier) => {
-            loader.add(soldier, `${soldier}.png`);
-        });
-
-        createHexagonalGrid(hexContainer); // Using the function from hexagonalGrid.js
-
-        let lastHighlighted = null;
-
-        hexContainer.interactive = true;
-        hexContainer.on('mousemove', (event) => {
-            const pos = event.data.getLocalPosition(hexContainer);
-            const col = Math.round(pos.x / (hexWidth * 0.75));
-            const row = Math.round((pos.y - (col % 2) * (hexHeight / 2)) / hexHeight);
-            
-            if (col >= 0 && col < gridWidth && row >= 0 && row < gridHeight) {
-                const index = row * gridWidth + col;
-                const hexagon = hexContainer.children[index];
-
-                if (lastHighlighted && lastHighlighted !== hexagon && !lastHighlighted.clicked) {
-                    lastHighlighted.tint = 0xffffff;
-                }
-
-                if (!hexagon.clicked) {
-                    hexagon.tint = 0xff0000;
-                }
-
-                lastHighlighted = hexagon;
-            }
-        });
-
-        let isDragging = false;
-        let dragStartX, dragStartY;
-
-        hexContainer.on('mousedown', (event) => {
-            isDragging = true;
-            dragStartX = event.data.global.x - hexContainer.x;
-            dragStartY = event.data.global.y - hexContainer.y;
-
-            loader.load((loader, resources) => {
-                const randomSoldier = soldiers[Math.floor(Math.random() * soldiers.length)];
-                const soldier = new PIXI.Sprite(resources[randomSoldier].texture);
-
-                soldier.scale.set(0.2, 0.2);
-
-                const localPos = event.data.getLocalPosition(hexContainer);
-                soldier.x = localPos.x;
-                soldier.y = localPos.y;
-                soldier.anchor.set(0.5, 0.5);
-
-                hexContainer.addChild(soldier);
-            });
-        });
-
-        hexContainer.on('mouseup', () => {
-            isDragging = false;
-        });
-
-        hexContainer.on('mousemove', (event) => {
-            if (isDragging) {
-                hexContainer.x = event.data.global.x - dragStartX;
-                hexContainer.y = event.data.global.y - dragStartY;
-            }
-        });
-
-        document.addEventListener('wheel', (event) => {
-            event.preventDefault();
-
-            const mousePos = app.renderer.plugins.interaction.mouse.global;
-            const worldPosBeforeZoom = hexContainer.toLocal(mousePos);
-
-            const zoomFactor = event.deltaY > 0 ? 0.9 : 1.1;
-            hexContainer.scale.x *= zoomFactor;
-            hexContainer.scale.y *= zoomFactor;
-
-            const worldPosAfterZoom = hexContainer.toLocal(mousePos);
-            hexContainer.x += (worldPosAfterZoom.x - worldPosBeforeZoom.x) * hexContainer.scale.x;
-            hexContainer.y += (worldPosAfterZoom.y - worldPosBeforeZoom.y) * hexContainer.scale.y;
-        });
-
-        window.addEventListener('resize', () => {
-            app.renderer.resize(window.innerWidth, window.innerHeight);
-        });
+        
     </script>
 </body>
 </html>
