@@ -1,6 +1,7 @@
 {
     "units": [
       {
+        "unit_name": "Soldier 47",
         "unit_id": "soldeier_ak47",
         "unit_description": "A battle-hardened fighter with an AK-47, known for precision and resilience in medium-range combat.",
         "unit_type": "Infantry",
@@ -10,9 +11,11 @@
         "unit_damage": 40,
         "unit_speed": 50,
         "unit_attack_range": 60,
-        "cost": 200
+        "unit_cost": 200,
+        "unit_monthly": 30
       },
       {
+        "unit_name": "Bombandier",
         "unit_id": "soldier_bomb_squad",
         "unit_description": "An expert in defusing explosives and setting traps, crucial for dismantling enemy defenses.",
         "unit_type": "Specialist",
@@ -22,9 +25,11 @@
         "unit_damage": 20,
         "unit_speed": 40,
         "unit_attack_range": 30,
-        "cost": 250
+        "unit_cost": 250,
+        "unit_monthly": 40
       },
       {
+        "unit_name": "Heavy",
         "unit_id": "soldier_german",
         "unit_description": "A disciplined veteran from the European front, skilled in tactics and marksmanship.",
         "unit_type": "Marksman",
@@ -34,9 +39,11 @@
         "unit_damage": 50,
         "unit_speed": 45,
         "unit_attack_range": 70,
-        "cost": 300
+        "unit_cost": 300,
+        "unit_monthly": 50
       },
       {
+        "unit_name": "Scout",
         "unit_id": "soldier_indian",
         "unit_description": "A versatile warrior with agility and cunning, skilled with both traditional and modern weapons.",
         "unit_type": "Scout",
@@ -46,9 +53,11 @@
         "unit_damage": 35,
         "unit_speed": 60,
         "unit_attack_range": 50,
-        "cost": 180
+        "unit_cost": 180,
+        "unit_monthly": 25
       },
       {
+        "unit_name": "Jack the Knife",
         "unit_id": "soldier_jack_the_knife",
         "unit_description": "A stealthy assassin specializing in close-quarter combat with a deadly knife.",
         "unit_type": "Assassin",
@@ -58,9 +67,11 @@
         "unit_damage": 60,
         "unit_speed": 70,
         "unit_attack_range": 10,
-        "cost": 220
+        "unit_cost": 220,
+        "unit_monthly": 45
       },
       {
+        "unit_name": "Colonel",
         "unit_id": "soldier_old_ak47",
         "unit_description": "A seasoned veteran with deadly accuracy using an AK-47, slower but wiser in battle.",
         "unit_type": "Veteran",
@@ -70,9 +81,11 @@
         "unit_damage": 45,
         "unit_speed": 35,
         "unit_attack_range": 60,
-        "cost": 230
+        "unit_cost": 230,
+        "unit_monthly": 50
       },
       {
+        "unit_name": "Pistolero",
         "unit_id": "soldier_pistol",
         "unit_description": "A quick and agile soldier with a high-caliber pistol, excels in close-quarters combat.",
         "unit_type": "Infantry",
@@ -82,9 +95,11 @@
         "unit_damage": 30,
         "unit_speed": 65,
         "unit_attack_range": 25,
-        "cost": 150
+        "unit_cost": 150,
+        "unit_monthly": 20
       },
       {
+        "unit_name": "Shotgunner",
         "unit_id": "soldier_shotgun",
         "unit_description": "A powerhouse with a shotgun, devastating in close-range engagements, ideal for breaching.",
         "unit_type": "Heavy",
@@ -94,9 +109,11 @@
         "unit_damage": 70,
         "unit_speed": 30,
         "unit_attack_range": 15,
-        "cost": 280
+        "unit_cost": 280,
+        "unit_monthly": 50
       },
       {
+        "unit_name": "Winter Soldier",
         "unit_id": "soldier_winter",
         "unit_description": "Specialized for harsh, snowy environments, resilient against the elements.",
         "unit_type": "Infantry",
@@ -106,9 +123,11 @@
         "unit_damage": 35,
         "unit_speed": 40,
         "unit_attack_range": 55,
-        "cost": 210
+        "unit_cost": 210,
+        "unit_monthly": 35
       },
       {
+        "unit_name": "Young Blood",
         "unit_id": "soldier_young",
         "unit_description": "A fresh recruit, quick to learn and adapt, bringing youthful vigor to the battlefield.",
         "unit_type": "Infantry",
@@ -118,7 +137,8 @@
         "unit_damage": 25,
         "unit_speed": 70,
         "unit_attack_range": 40,
-        "cost": 120
+        "unit_cost": 120,
+        "unit_monthly": 10
       }
     ]
   }

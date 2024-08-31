@@ -1,0 +1,81 @@
+.unit-container {
+    position: fixed;
+    bottom: 15px;
+    left: 15px;
+    right: 15px;
+    height: 150px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 25px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+    overflow: visible;
+}
+
+.unit-card {
+    min-height: 130px;
+    min-width: 100px;
+    margin-right: 10px;
+    text-align: center;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.unit-card img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.unit-card .unit-name {
+    font-size: 16px;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.unit-card .unit-cost {
+    font-size: 14px;
+    color: #888;
+    margin-top: 5px;
+}
+
+.unit-toggle-btn {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: top 0.3s ease, transform 0.3s ease;
+    z-index: 10;
+}
+
+.unit-toggle-btn span {
+    display: block;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+}
+
+.unit-toggle-btn.up span {
+    border-bottom: 10px solid #333;
+}
+
+.unit-toggle-btn.down span {
+    border-top: 10px solid #333;
+}

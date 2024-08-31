@@ -32,4 +32,50 @@ async function loadBattleUnits() {
 }
 
 // Call the function to load battle units
-loadBattleUnits();
+loadBattleUnits().then(() => {
+    if (demoMode) {
+        console.log('DEMO MODE ENABLED');
+
+        // Display the battle units in the unit container
+        battleUnits.forEach((unit) => {
+
+            // Create a unit card
+            const unitCard = document.createElement('div');
+            unitCard.classList.add('unit-card');
+
+            // Create an image element for the unit
+            const unitImage = document.createElement('img');
+            unitImage.src = `${unit.unit_id}.png`;
+            unitImage.alt = unit.unit_name;
+            unitImage.style.height = '65px';
+
+            // Create a div element for the unit name
+            const unitName = document.createElement('div');
+            unitName.classList.add('unit-name');
+            unitName.textContent = unit.unit_name;
+
+            // Create a div element for the unit cost
+            const unitCost = document.createElement('div');
+            unitCost.classList.add('unit-cost');
+            unitCost.textContent = `Cost: ${unit.unit_cost} $`;
+
+            // Create a div element for the monthly expense
+            const monthlyExpense = document.createElement('div');
+            monthlyExpense.classList.add('unit-cost');
+            monthlyExpense.textContent = `Monthly: ${unit.unit_monthly} $`;
+
+            // Append the elements to the unit card
+            unitCard.appendChild(unitImage);
+            unitCard.appendChild(unitName);
+            unitCard.appendChild(unitCost);
+            unitCard.appendChild(monthlyExpense);
+
+
+            unitContainer.appendChild(unitCard);
+        });
+    }
+
+
+
+
+});

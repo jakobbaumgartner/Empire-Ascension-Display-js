@@ -10,8 +10,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>  
     <!-- Import stylesheet-->
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="unitsDisplay.css">
 </head>
 <body>
+    <script>
+        let demoMode = true;
+    </script>
     <!-- The container for the PixiJS application -->
     <div id="hexCanvas"></div>
     <!-- Importing the custom hexagonal grid script -->
@@ -21,9 +25,15 @@
     <!-- Importing the custom script that will load assets for buildings and units-->
     <script src="loadAssets.js"></script>
 
+    <!-- Unit display container -->
+    <div class="unit-container" id="unitContainer">
+        <div class="unit-toggle-btn down" id="unitToggleBtn">
+            <span></span>
+        </div>
+    </div>
+    <!-- Unit display logic -->
+     <script src="unitsDisplay.js"></script>
 
-    <script>
-        
-    </script>
+
 </body>
 </html>
