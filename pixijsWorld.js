@@ -20,26 +20,19 @@ PIXI.Loader.shared.add('background', 'background.jpg').load((loader, resources) 
     const scaleY = app.renderer.height / background.texture.height;
     const scale = Math.min(scaleX, scaleY);
 
-    background.scale.set(0.8); // Set the scale of the background image
+    background.scale.set(scale); // Set the scale of the background image
     background.x = 0; // Position the background image at the top-left corner
     background.y = 0;
 
+    // Create a blur filter
+    const blurFilter = new PIXI.filters.BlurFilter();
+    blurFilter.blur = 10; // Adjust the blur amount (increase for more blur)
+
+    // Apply the filter to the background
+    background.filters = [blurFilter];
+
     app.stage.addChildAt(background, 0); // Add the background image to the stage
 });
-
-// // Create a new PIXI loader instance
-// const loader = new PIXI.Loader();
-// // Array of soldier image filenames
-// const soldiers = [
-//     'soldeier_ak47', 'soldier_bomb_squad', 'soldier_german', 'soldier_indian',
-//     'soldier_jack_the_knife', 'soldier_old_ak47', 'soldier_pistol',
-//     'soldier_shotgun', 'soldier_winter', 'soldier_young'
-// ];
-
-// // Load each soldier image into the loader
-// soldiers.forEach((soldier) => {
-//     loader.add(soldier, `${soldier}.png`);
-// });
 
 // Create a hexagonal grid with the specified width and height
 const hexGridData = createHexagonalGridData(gridWidth, gridHeight);
