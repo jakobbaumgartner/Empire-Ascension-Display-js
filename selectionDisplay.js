@@ -1,37 +1,46 @@
 var selected = null;
 
+// JavaScript function
 function displayUnitStats(unit) {
-    console.log(unit);
-    // Display unit stats
     const statsDisplay = document.getElementById('selectionContainerContentInner');
-
-    // Clear the stats display
     statsDisplay.innerHTML = '';
 
-    // Add the unit picture
     const unitImage = document.createElement('img');
-    unitImage.classList.add('selection-container-image');
+    unitImage.classList.add('unit-image');
     unitImage.src = `${unit.unit_id}.png`;
     unitImage.alt = unit.unit_name;
-    unitImage.style.height = '150px';
-    unitImage.style.display = 'block';
-    unitImage.style.margin = '0 auto';
     statsDisplay.appendChild(unitImage);
 
-    // Add the unit name
-    // Add the unit name
-    const unitName = document.createElement('div');
+    const unitName = document.createElement('h2');
     unitName.classList.add('unit-name');
     unitName.textContent = unit.unit_name;
-    unitName.style.textAlign = 'center'; // Center align the unit name
     statsDisplay.appendChild(unitName);
 
-    // Add the unit cost
+    const unitDescription = document.createElement('p');
+    unitDescription.classList.add('unit-description');
+    unitDescription.textContent = unit.unit_description;
+    statsDisplay.appendChild(unitDescription);
 
+    const statsList = document.createElement('ul');
+    statsList.classList.add('stats-list');
 
+    const stats = [
+        { label: 'Type', value: unit.unit_type },
+        { label: 'Level', value: unit.unit_level },
+        { label: 'Health', value: unit.unit_health },
+        { label: 'Armor', value: unit.unit_armor },
+        { label: 'Damage', value: unit.unit_damage },
+        { label: 'Speed', value: unit.unit_speed },
+        { label: 'Attack Range', value: unit.unit_attack_range },
+        { label: 'Cost', value: `${unit.unit_cost} (${unit.unit_monthly} monthly)` }
+    ];
+
+    stats.forEach(stat => {
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `<span class="stat-label">${stat.label}:</span> <span class="stat-value">${stat.value}</span>`;
+        statsList.appendChild(listItem);
+    });
+
+    statsDisplay.appendChild(statsList);
 }
-    
 
-
-
-  
