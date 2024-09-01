@@ -75,7 +75,7 @@
     margin-top: 5px;
 }
 
-.unit-card::after {
+/* .unit-card::after {
     content: "";
     position: absolute;
     background: rgba(255, 255, 255, 0.3);
@@ -85,13 +85,13 @@
     opacity: 0;
     transform: scale(0);
     transition: all 0.5s ease;
-}
+} */
 
-.unit-card:active::after {
+/* .unit-card:active::after {
     opacity: 1;
     transform: scale(3);
     transition: 0s;
-}
+} */
 
 /* @keyframes shake {
     0% { transform: translateX(0); }
@@ -175,7 +175,7 @@
     display: block;
     width: 0;
     height: 0;
-    border-top: 6px solid transparent;
+    border-top: 6px solid transparent;  
     border-bottom: 6px solid transparent;
 }
 
