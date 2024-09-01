@@ -36,49 +36,22 @@ PIXI.Loader.shared.add('background', 'background.jpg').load((loader, resources) 
 
 // Create a hexagonal grid with the specified width and height
 const hexGridData = createHexagonalGridData(gridWidth, gridHeight);
-console.log(hexGridData);
 // Display the hexagonal grid on the screen
 displayHexagonalGrid(hexContainer, hexGridData, hexWidth, hexHeight);
 
-
-
-let lastHighlighted = null; // To keep track of the last highlighted hexagon
-
-// Make the hexContainer interactive
-hexContainer.interactive = true;
-hexContainer.on('mousemove', (event) => {
-    // Get the local position of the mouse relative to the hexContainer
-    const pos = event.data.getLocalPosition(hexContainer);
-    // console.log(pos);
-    // Calculate the column and row of the hexagon under the mouse
-    const col = Math.round(pos.x / (hexWidth * 0.75));
-    const row = Math.round((pos.y - (col % 2) * (hexHeight / 2)) / hexHeight);
-    
-    // Check if the calculated position is within the grid bounds
-    if (col >= 0 && col < gridWidth && row >= 0 && row < gridHeight) {
-        const index = row * gridWidth + col;
-        const hexagon = hexContainer.children[index];
-
-        // If there is a previously highlighted hexagon, reset its tint
-        if (lastHighlighted && lastHighlighted !== hexagon && !lastHighlighted.clicked) {
-            lastHighlighted.tint = 0xffffff;
-        }
-
-        // Highlight the hexagon under the mouse
-        if (!hexagon.clicked) {
-            hexagon.tint = 0xff0000;
-        }
-
-        lastHighlighted = hexagon; // Update the last highlighted hexagon
-    }
-});
+// ----------------- Dragging and zooming -----------------
 
 let isDragging = false; // Flag to check if dragging is in progress
 let dragStartX, dragStartY; // Variables to store drag start positions
 
 // Handle the mousedown event on the hexContainer
 hexContainer.on('mousedown', (event) => {
-    isDragging = true; // Start dragging
+    const mouseEvent = event.data.originalEvent;
+    // Check if middle button is clicked
+    if (mouseEvent.button == 1) {
+            isDragging = true; // Start dragging
+    }
+
     // Store the initial position of the mouse relative to the hexContainer
     dragStartX = event.data.global.x - hexContainer.x;
     dragStartY = event.data.global.y - hexContainer.y;
@@ -135,3 +108,103 @@ document.addEventListener('wheel', (event) => {
 window.addEventListener('resize', () => {
     app.renderer.resize(window.innerWidth, window.innerHeight);
 });
+
+
+
+
+// ----------------- Other functions -----------------
+
+let lastHighlighted = null; // To keep track of the last highlighted hexagon
+let selectedHexagon = null;
+let selectedSoldier = null;
+
+// Make the hexContainer marked 
+hexContainer.interactive = true;
+hexContainer.on('mousemove', (event) => {
+    const pos = event.data.getLocalPosition(hexContainer);
+    const col = Math.round(pos.x / (hexWidth * 0.75));
+    const row = Math.round((pos.y - (col % 2) * (hexHeight / 2)) / hexHeight);
+    
+    if (col >= 0 && col < gridWidth && row >= 0 && row < gridHeight) {
+        const index = row * gridWidth + col;
+        const hexagon = hexContainer.children[index];
+
+        if (lastHighlighted && lastHighlighted !== hexagon && !lastHighlighted.clicked) {
+            lastHighlighted.tint = 0xffffff;
+        }
+
+        if (!hexagon.clicked) {
+            hexagon.tint = 0x000000;
+        }
+
+        lastHighlighted = hexagon;
+    }
+});
+
+// Hexagon click handler
+hexContainer.on('mousedown', (event) => {
+    const mouseEvent = event.data.originalEvent;
+    
+    if (mouseEvent.button === 0) {
+        const clickPosition = event.data.getLocalPosition(hexContainer);
+        
+        loader.load((loader, resources) => {
+            // Call createSoldier with the new parameters
+            const soldier = createSoldier(resources, selected, hexContainer, clickPosition, false); // or false for exact placement
+        });
+        
+    }
+});
+
+
+
+function createSoldier(resources, selected, hexContainer, clickPosition, centerOnHexagon) {
+    console.log("Creating soldier...");
+    const soldier = new PIXI.Sprite(resources[selected].texture);
+    soldier.scale.set(0.2, 0.2);
+    soldier.anchor.set(0.4, 0.9);
+    
+    // Soldier placement location
+
+    if (centerOnHexagon) {
+        // Calculate the center of the clicked hexagon
+        soldier.anchor.set(0.7, 1); // TODO: Different units should have different anchor points 
+        const col = Math.round(clickPosition.x / (hexWidth * 0.75));
+        const row = Math.round((clickPosition.y - (col % 2) * (hexHeight / 2)) / hexHeight);
+        soldier.x = col * hexWidth * 0.75 + hexWidth / 2;
+        soldier.y = row * hexHeight + (col % 2) * (hexHeight / 2) + hexHeight / 2;
+    } else {
+        // Place the soldier at the exact click position
+        soldier.anchor.set(0.4, 0.9); // Anchor point for the soldier sprite
+        soldier.x = clickPosition.x;
+        soldier.y = clickPosition.y;
+    }
+    
+    soldier.interactive = true;
+    soldier.buttonMode = true;
+    
+    soldier.on('mousedown', (event) => {
+        event.stopPropagation();
+        
+        // If another soldier is selected, deselect it
+        if (selectedSoldier && selectedSoldier !== soldier) {
+            selectedSoldier.tint = 0xFFFFFF;
+        }
+        
+        // If the soldier is already selected, deselect it
+        if (selectedSoldier === soldier) {
+            soldier.tint = 0xFFFFFF;
+            selectedSoldier = null;
+            console.log("Soldier deselected");
+
+        // Otherwise, select the soldier
+        } else {
+            soldier.tint = 0x00FF00;
+            selectedSoldier = soldier;
+            console.log("Soldier selected");
+        }
+    });
+    
+    hexContainer.addChild(soldier);
+    return soldier;
+}
