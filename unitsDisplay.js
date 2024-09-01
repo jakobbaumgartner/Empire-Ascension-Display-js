@@ -21,13 +21,13 @@ const selectionToggleBtn = document.getElementById('selectionToggleBtn');
 const selectionContainer = document.getElementById('selectionContainer');
 
 selectionToggleBtn.addEventListener('click', function() {
-    if (selectionContainer.style.transform === 'translateX(315px)') {
+    if (selectionContainer.style.transform === 'translateX(265px)') {
         selectionContainer.style.transform = 'translateX(0)';
         selectionToggleBtn.style.left = '-15px';
         selectionToggleBtn.classList.remove('left');
         selectionToggleBtn.classList.add('right');
     } else {
-        selectionContainer.style.transform = 'translateX(315px)';
+        selectionContainer.style.transform = 'translateX(265px)';
         selectionToggleBtn.style.left = '-15px';
         selectionToggleBtn.classList.remove('right');
         selectionToggleBtn.classList.add('left');
