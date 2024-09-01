@@ -16,6 +16,28 @@ const terrainTypes = {
     mountain: 0xA28B55 // Brown color for mountains
 };
 
+const terrainDescriptions = {
+    water: "Slows movement significantly unless you have a boat or specialized unit.",
+    beach: "Easy to traverse, allowing quick movement along the shoreline with no obstacles.",
+    grass: "Flat terrain that enables fast and efficient movement across open fields.",
+    forest: "Dense trees slow down movement, but provide good cover and concealment.",
+    mountain: "Difficult terrain to traverse, but offers strategic high ground and defensive benefits."
+};
+
+// Function to load terrain data from JSON file
+async function loadTerrainData() {
+    try {
+        const response = await fetch('terrain.json');
+        const data = await response.json();
+      
+        return data;
+    } catch (error) {
+        console.error('Error loading terrain data:', error);
+    }
+}
+
+
+
 // Create a Simplex noise generator instance
 const noise = new SimplexNoise();
 
@@ -66,9 +88,11 @@ function createHexagon(x, y, i, j, k, terrain) {
     return hexagon; // Return the created hexagon
 }
 
+var hexGrid = new Map();
+
+
 // Function to create a hexagonal grid data structure
 function createHexagonalGridData() {
-    const hexGrid = new Map();
 
     // Loop through each row and column to create hexagons
     for (let row = 0; row < gridHeight; row++) {
@@ -91,6 +115,7 @@ function createHexagonalGridData() {
             // Example data for each hexagon
             const hexData = {
                 hex_id: hex_id,
+                description: terrainDescriptions[terrain], // Description of the terrain
                 hex_cartesian: { x, y }, // Store the cartesian coordinates,
                 axial_coordinates: { i, j, k }, // Store the axial coordinates
                 terrain_type: terrain, // Store the terrain type

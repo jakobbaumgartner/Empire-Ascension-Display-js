@@ -35,7 +35,7 @@ PIXI.Loader.shared.add('background', 'background.jpg').load((loader, resources) 
 });
 
 // Create a hexagonal grid with the specified width and height
-const hexGridData = createHexagonalGridData(gridWidth, gridHeight);
+const hexGridData = createHexagonalGridData();
 // Display the hexagonal grid on the screen
 displayHexagonalGrid(hexContainer, hexGridData, hexWidth, hexHeight);
 
@@ -56,20 +56,6 @@ hexContainer.on('mousedown', (event) => {
     dragStartX = event.data.global.x - hexContainer.x;
     dragStartY = event.data.global.y - hexContainer.y;
 
-    // Load the soldier images and place a random soldier sprite on the hexagon grid
-    // loader.load((loader, resources) => {
-    //     const randomSoldier = soldiers[Math.floor(Math.random() * soldiers.length)];
-    //     const soldier = new PIXI.Sprite(resources[randomSoldier].texture);
-
-    //     soldier.scale.set(0.2, 0.2); // Scale the soldier sprite
-
-    //     const localPos = event.data.getLocalPosition(hexContainer); // Get the position of the click relative to the hexContainer
-    //     soldier.x = localPos.x;
-    //     soldier.y = localPos.y;
-    //     soldier.anchor.set(0.5, 0.5); // Set the anchor point to the center of the sprite
-
-    //     hexContainer.addChild(soldier); // Add the soldier sprite to the hexContainer
-    // });
 });
 
 // Stop dragging on mouseup event
@@ -148,12 +134,49 @@ hexContainer.on('mousedown', (event) => {
     if (mouseEvent.button === 0) {
         const clickPosition = event.data.getLocalPosition(hexContainer);
         
+        // If unit is selected, place it on the hexagon
+        if (selected) {
         loader.load((loader, resources) => {
             // Call createSoldier with the new parameters
             const soldier = createSoldier(resources, selected, hexContainer, clickPosition, false); // or false for exact placement
         });
-        
+
+        // Deselect the unit after placing it
+        selected = null
+        // Remove stats from the selection container
+        emptyStats();
+
     }
+    else {
+        const pos = event.data.getLocalPosition(hexContainer);
+        const col = Math.round(pos.x / (hexWidth * 0.75));
+        const row = Math.round((pos.y - (col % 2) * (hexHeight / 2)) / hexHeight);
+        
+        if (col >= 0 && col < gridWidth && row >= 0 && row < gridHeight) {
+            const index = row * gridWidth + col;
+            const hexagon = hexContainer.children[index];
+
+            console.log(`Hexagon clicked: ${col}, ${row}`);
+            console.log(hexagon);
+            displayHexagonStats(hexagon) // Display hexagon stats in the selection container
+            
+            if (selectedHexagon && selectedHexagon !== hexagon) {
+                selectedHexagon.tint = 0xFFFFFF;
+            }
+            
+            // if (hexagon.clicked) {
+            //     hexagon.tint = 0xFFFFFF;
+            //     selectedHexagon = null;
+            //     console.log("Hexagon deselected");
+            // } else {
+            //     hexagon.tint = 0x00FF00;
+            //     selectedHexagon = hexagon;
+            //     console.log("Hexagon selected");
+            // }
+
+    }
+        
+}}
 });
 
 

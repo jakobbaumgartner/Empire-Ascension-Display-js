@@ -44,3 +44,79 @@ function displayUnitStats(unit) {
     statsDisplay.appendChild(statsList);
 }
 
+function displayHexagonStats(hexagon) {
+    const statsDisplay = document.getElementById('selectionContainerContentInner');
+    statsDisplay.innerHTML = '';
+
+    const hexagonData = hexGrid.get(`${hexagon.i},${hexagon.j}`);
+
+    if (!hexagonData) {
+        console.error('No hexagon data found');
+        return;
+    }
+
+    // Hexagon Image (placeholder)
+    const hexImage = document.createElement('img');
+    // hexImage.classList.add('hex-image');
+    hexImage.classList.add('unit-image');
+    hexImage.src = `${hexagonData.terrain_type}.webp`;
+    hexImage.style.width = '100%';
+    hexImage.style.borderRadius = '8px';
+    hexImage.style.objectFit = 'cover';
+    hexImage.alt = hexagonData.terrain_type;
+    statsDisplay.appendChild(hexImage);
+
+    // Hexagon ID
+    // const hexId = document.createElement('h2');
+    // hexId.classList.add('unit-name');
+    // hexId.textContent = `${hexagonData.terrain_type.toUpperCase()} TILE`;
+    // statsDisplay.appendChild(hexId);
+
+    const statsDescription = document.createElement('p');
+    statsDescription.classList.add('unit-description');
+    statsDescription.textContent = hexagonData.description;
+    statsDisplay.appendChild(statsDescription);
+
+    const statsList = document.createElement('ul');
+    statsList.classList.add('stats-list');
+
+    const stats = [
+        {label: 'Terrain', value: capitalizeFirstLetter(hexagonData.terrain_type) },
+        { label: 'Coordinates', value: `(${hexagonData.axial_coordinates.i}, ${hexagonData.axial_coordinates.j}, ${hexagonData.axial_coordinates.k})` },
+        { label: 'Cartesian', value: `(${hexagonData.hex_cartesian.x.toFixed(2)}, ${hexagonData.hex_cartesian.y.toFixed(2)})` },
+        { label: 'Buildings', value: hexagonData.buildings.length > 0 ? hexagonData.buildings.join(', ') : 'None' },
+        // { label: 'Last Updated', value: new Date(hexagonData.timestamp).toLocaleString() }
+    ];
+
+    stats.forEach(stat => {
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `<span class="stat-label">${stat.label}:</span> <span class="stat-value">${stat.value}</span>`;
+        statsList.appendChild(listItem);
+    });
+
+    statsDisplay.appendChild(statsList);
+}
+
+// Helper function to capitalize the first letter of a string
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+// Helper function to get a color based on terrain type
+function getTerrainColor(terrainType) {
+    const colorMap = {
+        'grass': '#7CFC00',
+        'forest': '#228B22',
+        'mountain': '#A9A9A9',
+        'water': '#1E90FF',
+        // Add more terrain types and colors as needed
+    };
+    return colorMap[terrainType] || '#FFFFFF';  // Default to white if terrain type is not found
+}
+
+function emptyStats()
+{
+    const statsDisplay = document.getElementById('selectionContainerContentInner');
+    statsDisplay.innerHTML = '';
+}
+

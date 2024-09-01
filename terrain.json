@@ -1,0 +1,35 @@
+{
+    "terrains": [
+      {
+        "name": "water",
+        "movement_cost": 10,
+        "description": "Slows movement significantly unless you have a boat or specialized unit.",
+        "color": "0x5B99C2"
+      },
+      {
+        "name": "beach",
+        "movement_cost": 1,
+        "description": "Easy to traverse, allowing quick movement along the shoreline with no obstacles.",
+        "color": "0xF9DBBA"
+      },
+      {
+        "name": "grass",
+        "movement_cost": 1,
+        "description": "Flat terrain that enables fast and efficient movement across open fields.",
+        "color": "0xCBE2B5"
+      },
+      {
+        "name": "forest",
+        "movement_cost": 2,
+        "description": "Dense trees slow down movement, but provide good cover and concealment.",
+        "color": "0x86AB89"
+      },
+      {
+        "name": "mountain",
+        "movement_cost": 8,
+        "description": "Difficult terrain to traverse, but offers strategic high ground and defensive benefits.",
+        "color": "0xA28B55"
+      }
+    ]
+  }
+  
