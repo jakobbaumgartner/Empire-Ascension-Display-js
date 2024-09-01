@@ -33,7 +33,7 @@ async function loadBattleUnits() {
 
 // Call the function to load battle units
 loadBattleUnits().then(() => {
-    if (demoMode) {
+    if (1) {
         console.log('DEMO MODE ENABLED');
 
         // Display the battle units in the unit container
