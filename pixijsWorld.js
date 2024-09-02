@@ -181,7 +181,7 @@ function createSoldier(resources, selected, hexContainer, clickPosition, centerO
     // Create the soldier sprite
     const soldier = new PIXI.Sprite(resources[selected].texture);
     soldier.scale.set(0.2, 0.2);
-    soldier.anchor.set(0.5, 0.5);
+    soldier.anchor.set(0.4, 0.9);
     
     soldierContainer.addChild(soldier);
     
