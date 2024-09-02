@@ -95,9 +95,6 @@ window.addEventListener('resize', () => {
     app.renderer.resize(window.innerWidth, window.innerHeight);
 });
 
-
-
-
 // ----------------- Other functions -----------------
 
 let lastHighlighted = null; // To keep track of the last highlighted hexagon
@@ -163,71 +160,157 @@ hexContainer.on('mousedown', (event) => {
             if (selectedHexagon && selectedHexagon !== hexagon) {
                 selectedHexagon.tint = 0xFFFFFF;
             }
-            
-            // if (hexagon.clicked) {
-            //     hexagon.tint = 0xFFFFFF;
-            //     selectedHexagon = null;
-            //     console.log("Hexagon deselected");
-            // } else {
-            //     hexagon.tint = 0x00FF00;
-            //     selectedHexagon = hexagon;
-            //     console.log("Hexagon selected");
-            // }
-
+        }
     }
-        
-}}
+}
 });
-
-
 
 function createSoldier(resources, selected, hexContainer, clickPosition, centerOnHexagon) {
     console.log("Creating soldier...");
+    
+    const soldierContainer = new PIXI.Container();
+    
+    // Create the glow sprite
+    const glowTexture = createGlowTexture();
+    const glow = new PIXI.Sprite(glowTexture);
+    glow.anchor.set(0.5, 0.5);
+    glow.scale.set(1.2);
+    glow.alpha = 0; // Start with the glow invisible
+    soldierContainer.addChild(glow);
+    
+    // Create the soldier sprite
     const soldier = new PIXI.Sprite(resources[selected].texture);
     soldier.scale.set(0.2, 0.2);
-    soldier.anchor.set(0.4, 0.9);
+    soldier.anchor.set(0.5, 0.5);
     
-    // Soldier placement location
-
+    soldierContainer.addChild(soldier);
+    
+    // Soldier placement logic
     if (centerOnHexagon) {
-        // Calculate the center of the clicked hexagon
-        soldier.anchor.set(0.7, 1); // TODO: Different units should have different anchor points 
         const col = Math.round(clickPosition.x / (hexWidth * 0.75));
         const row = Math.round((clickPosition.y - (col % 2) * (hexHeight / 2)) / hexHeight);
-        soldier.x = col * hexWidth * 0.75 + hexWidth / 2;
-        soldier.y = row * hexHeight + (col % 2) * (hexHeight / 2) + hexHeight / 2;
+        soldierContainer.x = col * hexWidth * 0.75 + hexWidth / 2;
+        soldierContainer.y = row * hexHeight + (col % 2) * (hexHeight / 2) + hexHeight / 2;
     } else {
-        // Place the soldier at the exact click position
-        soldier.anchor.set(0.4, 0.9); // Anchor point for the soldier sprite
-        soldier.x = clickPosition.x;
-        soldier.y = clickPosition.y;
+        soldierContainer.x = clickPosition.x;
+        soldierContainer.y = clickPosition.y;
     }
     
-    soldier.interactive = true;
-    soldier.buttonMode = true;
+    // Set the hit area to match only the soldier sprite, not the glow
+    const hitAreaSize = Math.max(soldier.width, soldier.height);
+    soldierContainer.hitArea = new PIXI.Circle(0, 0, hitAreaSize / 2);
     
-    soldier.on('mousedown', (event) => {
+    soldierContainer.interactive = true;
+    soldierContainer.buttonMode = true;
+    
+    soldierContainer.on('mousedown', (event) => {
         event.stopPropagation();
         
-        // If another soldier is selected, deselect it
-        if (selectedSoldier && selectedSoldier !== soldier) {
-            selectedSoldier.tint = 0xFFFFFF;
+        if (selectedSoldier && selectedSoldier !== soldierContainer) {
+            deselectSoldier(selectedSoldier);
         }
         
-        // If the soldier is already selected, deselect it
-        if (selectedSoldier === soldier) {
-            soldier.tint = 0xFFFFFF;
+        if (selectedSoldier === soldierContainer) {
+            deselectSoldier(soldierContainer);
             selectedSoldier = null;
             console.log("Soldier deselected");
-
-        // Otherwise, select the soldier
         } else {
-            soldier.tint = 0x00FF00;
-            selectedSoldier = soldier;
+            selectSoldier(soldierContainer);
+            selectedSoldier = soldierContainer;
             console.log("Soldier selected");
         }
     });
     
-    hexContainer.addChild(soldier);
-    return soldier;
+    hexContainer.addChild(soldierContainer);
+
+    // Add smoother placement animation
+    soldier.y = 10; // Start the soldier slightly above its final position
+    soldier.alpha = 0; // Start with the soldier invisible
+
+    gsap.to(soldier, {
+        y: 0,
+        alpha: 1,
+        duration: 0.3,
+        ease: "power2.out"
+    });
+
+    return soldierContainer;
+}
+
+function selectSoldier(soldierContainer) {
+    const soldier = soldierContainer.getChildAt(1); // The soldier is now at index 1
+    const glow = soldierContainer.getChildAt(0); // The glow is at index 0
+    
+    // Smooth jump animation
+    gsap.to(soldier, {
+        y: -10, // Height of the jump
+        duration: 0.3, // Duration of the upward motion
+        ease: "power1.inOut", // Smoother easing function
+        onComplete: () => {
+            gsap.to(soldier, {
+                y: 0, // Return to original position
+                duration: 0.3, // Duration of the downward motion
+                ease: "power1.inOut" // Smoother easing function
+            });
+        }
+    });
+    
+    // Fade in the glow and add white tint to soldier
+    gsap.to(glow, {
+        alpha: 1,
+        duration: 0.3,
+        ease: "power1.inOut"
+    });
+    
+    gsap.to(soldier, {
+        tint: 0xFFFFFF, // White tint
+        brightness: 1.5, // Increase brightness
+        duration: 0.3,
+        ease: "power1.inOut"
+    });
+}
+
+function deselectSoldier(soldierContainer) {
+    const soldier = soldierContainer.getChildAt(1);
+    const glow = soldierContainer.getChildAt(0);
+    
+    // Ensure the soldier returns to original position
+    gsap.to(soldier, {
+        y: 0,
+        duration: 0.3,
+        ease: "power1.inOut"
+    });
+    
+    // Fade out the glow and remove white tint from soldier
+    gsap.to(glow, {
+        alpha: 0,
+        duration: 0.3,
+        ease: "power1.inOut"
+    });
+    
+    gsap.to(soldier, {
+        tint: 0xFFFFFF, // Reset tint
+        brightness: 1, // Reset brightness
+        duration: 0.3,
+        ease: "power1.inOut"
+    });
+}
+
+// Creates a radial gradient texture for the glow effect around selected soldiers   
+function createGlowTexture() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 128; // Reduced from 256 to 128
+    canvas.height = 128;
+    const ctx = canvas.getContext('2d');
+    
+    const gradient = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+    gradient.addColorStop(0, 'rgba(255, 255, 200, 1)');
+    gradient.addColorStop(0.3, 'rgba(255, 255, 100, 0.8)');
+    gradient.addColorStop(0.6, 'rgba(255, 255, 0, 0.3)'); // Added an intermediate stop
+    gradient.addColorStop(1, 'rgba(255, 255, 0, 0)');
+    
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 128, 128);
+    
+    return PIXI.Texture.from(canvas);
 }
