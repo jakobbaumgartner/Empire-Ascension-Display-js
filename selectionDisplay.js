@@ -66,12 +66,6 @@ function displayHexagonStats(hexagon) {
     hexImage.alt = hexagonData.terrain_type;
     statsDisplay.appendChild(hexImage);
 
-    // Hexagon ID
-    // const hexId = document.createElement('h2');
-    // hexId.classList.add('unit-name');
-    // hexId.textContent = `${hexagonData.terrain_type.toUpperCase()} TILE`;
-    // statsDisplay.appendChild(hexId);
-
     const statsDescription = document.createElement('p');
     statsDescription.classList.add('unit-description');
     statsDescription.textContent = hexagonData.description;

@@ -33,3 +33,5 @@ selectionToggleBtn.addEventListener('click', function() {
         selectionToggleBtn.classList.add('left');
     }
 });
+
+// HINT: You might be searching for code in loadAssets.js

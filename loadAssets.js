@@ -34,8 +34,35 @@ async function loadBattleUnits() {
 // Call the function to load battle units
 loadBattleUnits().then(() => {
     if (1) {
-        console.log('DEMO MODE ENABLED');
 
+        const unitContainer = document.getElementById('unitContainer');
+
+        // Create an empty card for deselection
+        const emptyCard = document.createElement('div');
+        emptyCard.classList.add('unit-card', 'unselectable');
+        emptyCard.id = 'card-empty';
+        emptyCard.style.display = 'flex';
+        emptyCard.style.alignItems = 'center';
+        emptyCard.style.justifyContent = 'center';
+        
+        // Create a clear title element
+        const clearTitle = document.createElement('div');
+        clearTitle.classList.add('unit-name');
+        clearTitle.textContent = 'Clear';
+        
+        // Append the clear title to the empty card
+        emptyCard.appendChild(clearTitle);
+        
+        // Add a click event listener to the empty card
+        emptyCard.addEventListener('click', function() {
+            console.log('Empty card selected');
+            selected = null;
+            emptyStats();
+        });
+        
+        // Append the empty card to the unit container
+        unitContainer.appendChild(emptyCard);
+        
         // Display the battle units in the unit container
         battleUnits.forEach((unit) => {
 
@@ -72,9 +99,9 @@ loadBattleUnits().then(() => {
             unitCard.appendChild(unitCost);
             unitCard.appendChild(monthlyExpense);
 
+            // Add a click event listener to the unit card
             unitCard.addEventListener('click', function() {
                 console.log(unit.unit_id);
-                console.log(selected);
                 selected = unit.unit_id;
 
                 // Display unit stats in right menu
