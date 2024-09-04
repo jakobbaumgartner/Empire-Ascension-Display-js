@@ -103,26 +103,26 @@ let selectedSoldier = null;
 
 // Make the hexContainer marked 
 hexContainer.interactive = true;
-hexContainer.on('mousemove', (event) => {
-    const pos = event.data.getLocalPosition(hexContainer);
-    const col = Math.round(pos.x / (hexWidth * 0.75));
-    const row = Math.round((pos.y - (col % 2) * (hexHeight / 2)) / hexHeight);
+// hexContainer.on('mousemove', (event) => {
+//     const pos = event.data.getLocalPosition(hexContainer);
+//     const col = Math.round(pos.x / (hexWidth * 0.75));
+//     const row = Math.round((pos.y - (col % 2) * (hexHeight / 2)) / hexHeight);
     
-    if (col >= 0 && col < gridWidth && row >= 0 && row < gridHeight) {
-        const index = row * gridWidth + col;
-        const hexagon = hexContainer.children[index];
+//     if (col >= 0 && col < gridWidth && row >= 0 && row < gridHeight) {
+//         const index = row * gridWidth + col;
+//         const hexagon = hexContainer.children[index];
 
-        if (lastHighlighted && lastHighlighted !== hexagon && !lastHighlighted.clicked) {
-            lastHighlighted.tint = 0xffffff;
-        }
+//         if (lastHighlighted && lastHighlighted !== hexagon && !lastHighlighted.clicked) {
+//             lastHighlighted.tint = 0xffffff;
+//         }
 
-        if (!hexagon.clicked) {
-            hexagon.tint = 0x000000;
-        }
+//         if (!hexagon.clicked) {
+//             hexagon.tint = 0x000000;
+//         }
 
-        lastHighlighted = hexagon;
-    }
-});
+//         lastHighlighted = hexagon;
+//     }
+// });
 
 // Hexagon click handler
 hexContainer.on('mousedown', (event) => {
