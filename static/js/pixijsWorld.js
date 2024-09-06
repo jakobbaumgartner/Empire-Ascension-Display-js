@@ -99,7 +99,6 @@ window.addEventListener('resize', () => {
 
 let lastHighlighted = null; // To keep track of the last highlighted hexagon
 let selectedHexagon = null;
-let selectedSoldier = null;
 
 // Make the hexContainer marked 
 hexContainer.interactive = true;
@@ -131,10 +130,7 @@ hexContainer.on('mousedown', (event) => {
     if (mouseEvent.button === 0) {
         const clickPosition = event.data.getLocalPosition(hexContainer);
         
-
-        console.log(selectedObject)
-
-        // If unit is selected, place it on the hexagon
+        // If a new unit is selected, place it on the hexagon
         if (selectedObject.object_type === 'new_unit') {
         loader.load((loader, resources) => {
             // Call createSoldier with the new parameters
@@ -142,13 +138,19 @@ hexContainer.on('mousedown', (event) => {
         });
 
         // Deselect the unit after placing it
-        selectedObject.object_id = null;
-        selectedObject.object_type = null;
-        // Remove stats from the selection container
+        deselectSelectedObject();
+
+        // Empty stats
         emptyStats();
+
 
     }
     else {
+
+        deselectSelectedObject();
+
+        // If no new unit is selected, select the hexagon
+
         const pos = event.data.getLocalPosition(hexContainer);
         const col = Math.round(pos.x / (hexWidth * 0.75));
         const row = Math.round((pos.y - (col % 2) * (hexHeight / 2)) / hexHeight);
@@ -210,15 +212,17 @@ function createSoldier(resources, selected, hexContainer, clickPosition, centerO
     soldierContainer.on('mousedown', (event) => {
         event.stopPropagation();
         
+        // Deselect the previously selected soldier if it's not the same as the current one
         if (selectedObject.object_type === 'soldier' && selectedObject.object_element !== soldierContainer) {
             deselectSoldier(selectedObject.object_element);
         }
         
+        // Select or deselect the soldier based on its current state
         if (selectedObject.object_type === 'soldier' && selectedObject.object_element === soldierContainer) {
+            // Deselect the soldier
             deselectSoldier(soldierContainer);
-            selectedObject.object_id = null;
-            selectedObject.object_type = null;
-            selectedObject.object_element = null;
+            // Deselect the selected object
+            deselectSelectedObject();
             console.log("Soldier deselected");
         } else {
             selectSoldier(soldierContainer);

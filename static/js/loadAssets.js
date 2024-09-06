@@ -105,6 +105,12 @@ loadBattleUnits().then(() => {
 
             // Add a click event listener to the unit card
             unitCard.addEventListener('click', function() {
+
+                // If selected soldier, deselect it first
+                if (selectedObject.object_type == 'soldier')
+                    {
+                        deselectSoldier(selectedObject.object_element)
+                    }
                 console.log(unit.unit_id);
                 selectedObject.object_id = unit.unit_id;
                 selectedObject.object_type = 'new_unit';

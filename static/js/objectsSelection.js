@@ -3,3 +3,17 @@ var selectedObject = {
     object_type: null,
     object_element: null
 };
+
+function deselectSelectedObject()
+{
+    if (selectedObject.object_type == 'soldier')
+    {
+        deselectSoldier(selectedObject.object_element)
+    }
+
+    // Clear the selected object
+    selectedObject.object_id = null;
+    selectedObject.object_type = null;
+    selectedObject.object_element = null;
+
+}
