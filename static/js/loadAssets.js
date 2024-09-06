@@ -54,8 +54,14 @@ loadBattleUnits().then(() => {
         
         // Add a click event listener to the empty card
         emptyCard.addEventListener('click', function() {
-            console.log('Empty card selected');
-            selected = null;
+            console.log(selectedObject)
+            console.log('Clear selection.');
+            if (selectedObject.object_type == 'soldier')
+            {
+                deselectSoldier(selectedObject.object_element)
+            }
+            selectedObject.object_id = null;
+            selectedObject.object_type = null;
             emptyStats();
         });
         
@@ -100,7 +106,8 @@ loadBattleUnits().then(() => {
             // Add a click event listener to the unit card
             unitCard.addEventListener('click', function() {
                 console.log(unit.unit_id);
-                selected = unit.unit_id;
+                selectedObject.object_id = unit.unit_id;
+                selectedObject.object_type = 'new_unit';
 
                 // Display unit stats in right menu
                 displayUnitStats(unit) 

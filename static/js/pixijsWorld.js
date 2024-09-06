@@ -131,15 +131,19 @@ hexContainer.on('mousedown', (event) => {
     if (mouseEvent.button === 0) {
         const clickPosition = event.data.getLocalPosition(hexContainer);
         
+
+        console.log(selectedObject)
+
         // If unit is selected, place it on the hexagon
-        if (selected) {
+        if (selectedObject.object_type === 'new_unit') {
         loader.load((loader, resources) => {
             // Call createSoldier with the new parameters
-            const soldier = createSoldier(resources, selected, hexContainer, clickPosition, false); // or false for exact placement
+            const soldier = createSoldier(resources, selectedObject.object_id, hexContainer, clickPosition, false); // or false for exact placement
         });
 
         // Deselect the unit after placing it
-        selected = null
+        selectedObject.object_id = null;
+        selectedObject.object_type = null;
         // Remove stats from the selection container
         emptyStats();
 
@@ -206,17 +210,21 @@ function createSoldier(resources, selected, hexContainer, clickPosition, centerO
     soldierContainer.on('mousedown', (event) => {
         event.stopPropagation();
         
-        if (selectedSoldier && selectedSoldier !== soldierContainer) {
-            deselectSoldier(selectedSoldier);
+        if (selectedObject.object_type === 'soldier' && selectedObject.object_element !== soldierContainer) {
+            deselectSoldier(selectedObject.object_element);
         }
         
-        if (selectedSoldier === soldierContainer) {
+        if (selectedObject.object_type === 'soldier' && selectedObject.object_element === soldierContainer) {
             deselectSoldier(soldierContainer);
-            selectedSoldier = null;
+            selectedObject.object_id = null;
+            selectedObject.object_type = null;
+            selectedObject.object_element = null;
             console.log("Soldier deselected");
         } else {
             selectSoldier(soldierContainer);
-            selectedSoldier = soldierContainer;
+            selectedObject.object_id = selected;
+            selectedObject.object_type = 'soldier';
+            selectedObject.object_element = soldierContainer;
             console.log("Soldier selected");
         }
     });
