@@ -4,6 +4,9 @@ const loader = new PIXI.Loader();
 // Create a Map to store battle units
 const battleUnits = new Map();
 
+// Load goal flag
+loader.add('goalFlag', '/static/images/pin_blueflag.png');
+
 // Function to load and parse the JSON file
 async function loadBattleUnits() {
     try {

@@ -4,5 +4,5 @@ function apiMove(selectedObject, moveGoal, hexagonTile) {
     console.log(moveGoal);
     console.log(hexagonTile);
 
-    
+
 }

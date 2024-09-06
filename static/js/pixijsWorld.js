@@ -174,7 +174,76 @@ hexContainer.on('mousedown', (event) => {
                     y: clickPosition.y,
                 };
 
-                apiMove(selectedObject, moveGoal, hexagon);
+                // Place goal flag
+                loader.load((loader, resources) => {
+                    const goalFlag = new PIXI.Sprite(resources.goalFlag.texture);
+                    hexContainer.addChild(goalFlag);
+                    goalFlag.scale.set(0, 0); // Start with zero scale
+                    goalFlag.anchor.set(0.5, 0.85);
+                    goalFlag.x = moveGoal.x;
+                    goalFlag.y = moveGoal.y;
+                    hexContainer.addChild(goalFlag);
+                    goalFlag.interactive = true;
+                    goalFlag.buttonMode = true;
+
+                    // Add bouncy animation to the flag
+                    gsap.to(goalFlag.scale, {
+                        x: 0.15,
+                        y: 0.15,
+                        duration: 0.5,
+                        ease: "elastic.out(1, 0.3)",
+                        onComplete: () => {
+                            // Add a subtle wave animation after the initial bounce
+                            gsap.to(goalFlag, {
+                                rotation: 0.1,
+                                duration: 1,
+                                repeat: -1,
+                                yoyo: true,
+                                ease: "sine.inOut"
+                            });
+                        }
+                    });
+
+                    const trajectoryKey = 'trajectory_' + selectedObject.object_id;
+
+                    // On click, remove the goal flag
+                    goalFlag.on('mousedown', (event) => {
+                        event.stopPropagation();
+                        console.log("Removing goal flag...");
+                        hexContainer.removeChild(goalFlag);
+                        removeTrajectory(trajectoryKey);
+                    });
+
+                    var trajectory = {
+                        key: trajectoryKey,
+                        soldier_sprite: selectedObject.object_element,
+                        flag_sprite: goalFlag,
+                        trajectory: [
+                            {
+                                x: selectedObject.object_element.x,
+                                y: selectedObject.object_element.y,
+                                time: 0
+                            },
+                            {
+                                x: moveGoal.x,
+                                y: moveGoal.y,
+                                time: 0
+                            }
+                        ]
+                    };
+
+                    // Add the trajectory key to the goal flag
+                    goalFlag.trajectory_key = trajectoryKey;
+
+                    addTrajectory(trajectoryKey, trajectory);
+
+                    apiMove(trajectory, hexagon);
+
+
+                });
+           
+
+
 
             }
 
