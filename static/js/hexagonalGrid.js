@@ -118,7 +118,8 @@ function createHexagonalGridData() {
                 terrain_type: terrain, // Store the terrain type
                 state_hash: null, // Placeholder for state_hash
                 timestamp: Date.now(), // Example timestamp
-                buildings: [] // Placeholder for buildings, can be an array
+                buildings: [], // Placeholder for buildings, can be an array
+                sprite: null // Placeholder for sprite
             };
 
             // Store the hexData in the map
@@ -139,6 +140,9 @@ function displayHexagonalGrid(hexContainer, hexGrid) {
         // Create the hexagon (function needs to use the x, y positions and other properties)
         const hexagon = createHexagon(x, y, q, r, s, terrain);
 
+        // Store the hexagon sprite in the hexData object
+        hexData.sprite = hexagon;
+
         // Add coordinate text to the hexagon for debugging
         if (0) {
             // Create text for coordinates
@@ -157,6 +161,18 @@ function displayHexagonalGrid(hexContainer, hexGrid) {
         // Add the hexagon to the container
         hexContainer.addChild(hexagon);
     });
+}
+
+// Function to get the sprite of a hexagon based on its axial coordinates
+function getHexagonSprite(q, r) {
+    const hex_id = `${q},${r}`;
+    const hexData = hexGrid.get(hex_id);
+    
+    if (hexData) {
+        return hexData.sprite;
+    }
+    
+    return null;
 }
 
 // Add these conversion functions

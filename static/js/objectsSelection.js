@@ -4,6 +4,7 @@ var selectedObject = {
     object_element: null
 };
 
+// Function to deselect the selected object
 function deselectSelectedObject()
 {
     if (selectedObject.object_type == 'soldier')

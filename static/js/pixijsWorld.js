@@ -172,11 +172,9 @@ hexContainer.on('mousedown', (event) => {
                 const moveGoal = {
                     x: clickPosition.x,
                     y: clickPosition.y,
-                    i: hexCoords.q,
-                    j: hexCoords.r
                 };
 
-                apiMove(selectedObject, moveGoal);
+                apiMove(selectedObject, moveGoal, hexagon);
 
             }
 
@@ -187,8 +185,6 @@ hexContainer.on('mousedown', (event) => {
             selectedObject.object_type = 'hexagon';
             selectedObject.object_element = hexagon;
             
-          
-        
     }
 }
 });
