@@ -206,12 +206,29 @@ hexContainer.on('mousedown', (event) => {
 
                     const trajectoryKey = 'trajectory_' + selectedObject.object_id;
 
-                    // On click, remove the goal flag
+                    // On click, animate the flag to red and then remove it
                     goalFlag.on('mousedown', (event) => {
                         event.stopPropagation();
                         console.log("Removing goal flag...");
-                        hexContainer.removeChild(goalFlag);
-                        removeTrajectory(trajectoryKey);
+                        
+                        // Animate the flag to red
+                        gsap.to(goalFlag, {
+                            tint: 0xFF0000, // Red tint
+                            duration: 0.5,
+                            ease: "power1.inOut",
+                            onComplete: () => {
+                                // Fade out and remove the flag
+                                gsap.to(goalFlag, {
+                                    alpha: 0,
+                                    duration: 0.3,
+                                    ease: "power1.inOut",
+                                    onComplete: () => {
+                                        hexContainer.removeChild(goalFlag);
+                                        removeTrajectory(trajectoryKey);
+                                    }
+                                });
+                            }
+                        });
                     });
 
                     var trajectory = {
