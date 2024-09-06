@@ -176,17 +176,28 @@ hexContainer.on('mousedown', (event) => {
 
                 // Place goal flag
                 loader.load((loader, resources) => {
+                    const flagContainer = new PIXI.Container();
+                    
+                    // Create the glow sprite for the flag
+                    const glowTexture = createGlowTexture();
+                    const glow = new PIXI.Sprite(glowTexture);
+                    glow.anchor.set(0.5, 0.5);
+                    glow.scale.set(1.2);
+                    glow.alpha = 0; // Start with the glow invisible
+                    flagContainer.addChild(glow);
+                    
                     const goalFlag = new PIXI.Sprite(resources.goalFlag.texture);
-                    hexContainer.addChild(goalFlag);
                     goalFlag.scale.set(0, 0); // Start with zero scale
                     goalFlag.anchor.set(0.5, 0.85);
-                    goalFlag.x = moveGoal.x;
-                    goalFlag.y = moveGoal.y;
-                    hexContainer.addChild(goalFlag);
-                    goalFlag.interactive = true;
-                    goalFlag.buttonMode = true;
+                    flagContainer.addChild(goalFlag);
+                    
+                    flagContainer.x = moveGoal.x;
+                    flagContainer.y = moveGoal.y;
+                    hexContainer.addChild(flagContainer);
+                    flagContainer.interactive = true;
+                    flagContainer.buttonMode = true;
 
-                    // Add bouncy animation to the flag
+                    // Add bouncy animation to the flag and fade in the glow
                     gsap.to(goalFlag.scale, {
                         x: 0.15,
                         y: 0.15,
@@ -204,30 +215,43 @@ hexContainer.on('mousedown', (event) => {
                         }
                     });
 
+                    // Fade in the glow
+                    gsap.to(glow, {
+                        alpha: 0.8,
+                        duration: 0.5,
+                        ease: "power1.inOut"
+                    });
+
                     const trajectoryKey = 'trajectory_' + selectedObject.object_id;
 
                     // On click, animate the flag to red and then remove it
-                    goalFlag.on('mousedown', (event) => {
+                    flagContainer.on('mousedown', (event) => {
                         event.stopPropagation();
                         console.log("Removing goal flag...");
                         
-                        // Animate the flag to red
+                        // Animate the flag to red and fade out the glow
                         gsap.to(goalFlag, {
                             tint: 0xFF0000, // Red tint
                             duration: 0.5,
                             ease: "power1.inOut",
                             onComplete: () => {
-                                // Fade out and remove the flag
-                                gsap.to(goalFlag, {
+                                // Fade out and remove the flag container
+                                gsap.to(flagContainer, {
                                     alpha: 0,
                                     duration: 0.3,
                                     ease: "power1.inOut",
                                     onComplete: () => {
-                                        hexContainer.removeChild(goalFlag);
+                                        hexContainer.removeChild(flagContainer);
                                         removeTrajectory(trajectoryKey);
                                     }
                                 });
                             }
+                        });
+
+                        gsap.to(glow, {
+                            alpha: 0,
+                            duration: 0.5,
+                            ease: "power1.inOut"
                         });
                     });
 
