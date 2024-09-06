@@ -97,8 +97,8 @@ window.addEventListener('resize', () => {
 
 // ----------------- Other functions -----------------
 
-let lastHighlighted = null; // To keep track of the last highlighted hexagon
-let selectedHexagon = null;
+// let lastHighlighted = null; // To keep track of the last highlighted hexagon
+// let selectedHexagon = null;
 
 // Make the hexContainer marked 
 hexContainer.interactive = true;
@@ -162,10 +162,13 @@ hexContainer.on('mousedown', (event) => {
             console.log(`Hexagon clicked: ${col}, ${row}`);
             console.log(hexagon);
             displayHexagonStats(hexagon) // Display hexagon stats in the selection container
+
+            // Select the hexagon
+            selectedObject.object_id = `${col},${row}`;
+            selectedObject.object_type = 'hexagon';
+            selectedObject.object_element = hexagon;
             
-            if (selectedHexagon && selectedHexagon !== hexagon) {
-                selectedHexagon.tint = 0xFFFFFF;
-            }
+          
         }
     }
 }
