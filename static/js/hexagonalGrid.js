@@ -36,8 +36,6 @@ async function loadTerrainData() {
     }
 }
 
-
-
 // Create a Simplex noise generator instance
 const noise = new SimplexNoise();
 
@@ -78,7 +76,7 @@ function createHexagon(x, y, i, j, k, terrain) {
     hexagon.i = i; // Store the axial coordinate i
     hexagon.j = j; // Store the axial coordinate j
     hexagon.k = k; // Store the axial coordinate k
-    hexagon.terrain = terrain; // Store the terrain type for the hexagon
+    // hexagon.terrain = terrain; // Store the terrain type for the hexagon
 
     // Make the hexagon interactive and set its initial clicked state to false
     hexagon.interactive = true;
@@ -92,32 +90,31 @@ var hexGrid = new Map();
 
 
 // Function to create a hexagonal grid data structure
+// Function to create a hexagonal grid data structure
 function createHexagonalGridData() {
+    const hexGrid = new Map(); // Initialize the hex grid data structure
 
-    // Loop through each row and column to create hexagons
-    for (let row = 0; row < gridHeight; row++) {
-        for (let col = 0; col < gridWidth; col++) {
-            // Calculate the position of the hexagon
-            const x = col * hexWidth * 0.75; // Horizontal position with 75% overlap for adjacent columns
-            const y = row * hexHeight + (col % 2) * (hexHeight / 2); // Vertical position with offset for staggered rows
-            // Calculate the axial coordinates (i, j, k)
-            const i = col;
-            const j = row - Math.floor(col / 2);
-            const k = -i - j;
+    // Loop through each column and row to create hexagons
+    for (let col = 0; col < gridWidth; col++) {
+        for (let row = 0; row < gridHeight; row++) {
+            const oddq = { col, row };
+            const { q, r, s } = oddq_to_axial(oddq);
+
+            const { x, y } = oddq_offset_to_pixel(oddq);
 
             // Get noise value and terrain type for the hexagon
-            const noiseValue = noise.noise2D(i * 0.05, j * 0.05); // Get noise value based on position
+            const noiseValue = noise.noise2D(q * 0.05, r * 0.05); // Get noise value based on position
             const terrain = getTerrainType(noiseValue); // Determine terrain type based on noise value
 
-            // Create a unique hex_id or use i,j,k coordinates as an identifier
-            const hex_id = `${i},${j},${k}`;
+            // Create a unique hex_id or use q,r,s coordinates as an identifier
+            const hex_id = `${q},${r}`;
 
             // Example data for each hexagon
             const hexData = {
                 hex_id: hex_id,
                 description: terrainDescriptions[terrain], // Description of the terrain
-                hex_cartesian: { x, y }, // Store the cartesian coordinates,
-                axial_coordinates: { i, j, k }, // Store the axial coordinates
+                hex_cartesian: { x, y }, // Store the cartesian coordinates
+                axial_coordinates: { q, r, s }, // Store the axial coordinates
                 terrain_type: terrain, // Store the terrain type
                 state_hash: null, // Placeholder for state_hash
                 timestamp: Date.now(), // Example timestamp
@@ -125,30 +122,88 @@ function createHexagonalGridData() {
             };
 
             // Store the hexData in the map
-            hexGrid.set(`${i},${j}`, hexData);
+            hexGrid.set(hex_id, hexData);
         }
     }
-
+    console.log(hexGrid);
     return hexGrid;
 }
 
 // Function to display the hexagonal grid on the screen
 function displayHexagonalGrid(hexContainer, hexGrid) {
     hexGrid.forEach((hexData, key) => {
-        i = hexData.axial_coordinates.i;
-        j = hexData.axial_coordinates.j;
-        k = hexData.axial_coordinates.k;
+        const { q, r, s } = hexData.axial_coordinates;
+        const { x, y } = hexData.hex_cartesian;
+        const terrain = hexData.terrain_type;
 
-        x = hexData.hex_cartesian.x;
-        y = hexData.hex_cartesian.y;
+        // Create the hexagon (function needs to use the x, y positions and other properties)
+        const hexagon = createHexagon(x, y, q, r, s, terrain);
 
-        terrain = hexData.terrain_type;        
+        // Add coordinate text to the hexagon for debugging
+        if (0) {
+            // Create text for coordinates
+            const coordText = new PIXI.Text(`${q},${r}`, {
+                fontFamily: 'Arial',
+                fontSize: 8,
+                fill: 0x000000
+            });
+            coordText.anchor.set(0.5);
+            coordText.position.set(0, 0);
 
-        // Create the hexagon
-        const hexagon = createHexagon(x, y, i, j, k, terrain);
+            // Add the coordinate text to the hexagon
+            hexagon.addChild(coordText);
+        }
 
         // Add the hexagon to the container
         hexContainer.addChild(hexagon);
     });
 }
 
+// Add these conversion functions
+function axial_to_oddq(hex) {
+    var col = hex.q;
+    var row = hex.r + (hex.q - (hex.q&1)) / 2;
+    return { col, row };
+}
+
+function oddq_to_axial(hex) {
+    var q = hex.col;
+    var r = hex.row - (hex.col - (hex.col&1)) / 2;
+    return { q, r, s: -q-r };
+}
+
+// Add this conversion function
+function oddq_offset_to_pixel(hex) {
+    var x = hexRadius * 3/2 * hex.col;
+    var y = hexRadius * Math.sqrt(3) * (hex.row + 0.5 * (hex.col&1));
+    return { x, y };
+}
+
+// Function to convert pixel coordinates to flat-top hexagon coordinates
+function pixel_to_flat_hex(x, y) {
+    const q = (2/3 * x) / hexRadius;
+    const r = (-1/3 * x + Math.sqrt(3)/3 * y) / hexRadius;
+    return axial_round({q, r});
+}
+
+// Helper function to round axial coordinates
+function axial_round({q, r}) {
+    let s = -q - r;
+    let qi = Math.round(q);
+    let ri = Math.round(r);
+    let si = Math.round(s);
+    
+    const q_diff = Math.abs(qi - q);
+    const r_diff = Math.abs(ri - r);
+    const s_diff = Math.abs(si - s);
+    
+    if (q_diff > r_diff && q_diff > s_diff) {
+        qi = -ri - si;
+    } else if (r_diff > s_diff) {
+        ri = -qi - si;
+    } else {
+        si = -qi - ri;
+    }
+    
+    return {q: qi, r: ri, s: si};
+}

@@ -152,43 +152,43 @@ hexContainer.on('mousedown', (event) => {
         // If no new unit is selected, select the hexagon
 
         const pos = event.data.getLocalPosition(hexContainer);
-        const col = Math.round(pos.x / (hexWidth * 0.75));
-        const row = Math.round((pos.y - (col % 2) * (hexHeight / 2)) / hexHeight);
-        
-        if (col >= 0 && col < gridWidth && row >= 0 && row < gridHeight) {
-            const index = row * gridWidth + col;
-            const hexagon = hexContainer.children[index];
+        const hexCoords = pixel_to_flat_hex(pos.x, pos.y);
+        const object_id = `${hexCoords.q},${hexCoords.r}`;
 
-            console.log(`Hexagon clicked: ${col}, ${row}`);
+        console.log('Hex coords:', hexCoords);
+
+        console.log(hexGridData);
+        console.log(object_id);
+        
+            const hexagon = hexGridData.get(object_id);
+
             console.log(hexagon);
             displayHexagonStats(hexagon) // Display hexagon stats in the selection container
-
-
 
             // If an existig unit is selected, call the move function
             if (selectedObject.object_type === 'soldier') {
 
-            console.log("Moving soldier...");
-            const moveGoal = {
-                x: clickPosition.x,
-                y: clickPosition.y,
-                i: col,
-                j: row
-            };
+                console.log("Moving soldier...");
+                const moveGoal = {
+                    x: clickPosition.x,
+                    y: clickPosition.y,
+                    i: hexCoords.q,
+                    j: hexCoords.r
+                };
 
-            apiMove(selectedObject, moveGoal);
+                apiMove(selectedObject, moveGoal);
+
             }
 
             deselectSelectedObject();
 
-
             // Select the hexagon
-            selectedObject.object_id = `${col},${row}`;
+            selectedObject.object_id = object_id;
             selectedObject.object_type = 'hexagon';
             selectedObject.object_element = hexagon;
             
           
-        }
+        
     }
 }
 });

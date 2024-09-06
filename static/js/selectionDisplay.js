@@ -48,7 +48,7 @@ function displayHexagonStats(hexagon) {
     const statsDisplay = document.getElementById('selectionContainerContentInner');
     statsDisplay.innerHTML = '';
 
-    const hexagonData = hexGrid.get(`${hexagon.i},${hexagon.j}`);
+    const hexagonData = hexagon;
 
     if (!hexagonData) {
         console.error('No hexagon data found');
@@ -76,7 +76,7 @@ function displayHexagonStats(hexagon) {
 
     const stats = [
         {label: 'Terrain', value: capitalizeFirstLetter(hexagonData.terrain_type) },
-        { label: 'Coordinates', value: `(${hexagonData.axial_coordinates.i}, ${hexagonData.axial_coordinates.j}, ${hexagonData.axial_coordinates.k})` },
+        { label: 'Coordinates', value: `(${hexagonData.axial_coordinates.q}, ${hexagonData.axial_coordinates.r})` },
         { label: 'Cartesian', value: `(${hexagonData.hex_cartesian.x.toFixed(2)}, ${hexagonData.hex_cartesian.y.toFixed(2)})` },
         { label: 'Buildings', value: hexagonData.buildings.length > 0 ? hexagonData.buildings.join(', ') : 'None' },
         // { label: 'Last Updated', value: new Date(hexagonData.timestamp).toLocaleString() }
