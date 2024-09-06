@@ -146,8 +146,8 @@ hexContainer.on('mousedown', (event) => {
 
     }
     else {
+        
 
-        deselectSelectedObject();
 
         // If no new unit is selected, select the hexagon
 
@@ -162,6 +162,25 @@ hexContainer.on('mousedown', (event) => {
             console.log(`Hexagon clicked: ${col}, ${row}`);
             console.log(hexagon);
             displayHexagonStats(hexagon) // Display hexagon stats in the selection container
+
+
+
+            // If an existig unit is selected, call the move function
+            if (selectedObject.object_type === 'soldier') {
+
+            console.log("Moving soldier...");
+            const moveGoal = {
+                x: clickPosition.x,
+                y: clickPosition.y,
+                i: col,
+                j: row
+            };
+
+            apiMove(selectedObject, moveGoal);
+            }
+
+            deselectSelectedObject();
+
 
             // Select the hexagon
             selectedObject.object_id = `${col},${row}`;
