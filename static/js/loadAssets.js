@@ -59,12 +59,13 @@ loadBattleUnits().then(() => {
         emptyCard.addEventListener('click', function() {
             console.log(selectedObject)
             console.log('Clear selection.');
-            if (selectedObject.object_type == 'soldier')
-            {
-                deselectSoldier(selectedObject.object_element)
-            }
-            selectedObject.object_id = null;
-            selectedObject.object_type = null;
+            // if (selectedObject.object_type == 'soldier')
+            // {
+            //     deselectSoldier(selectedObject.object_element)
+            // }
+            // selectedObject.object_id = null;
+            // selectedObject.object_type = null;
+            deselectSelectedObject();
             emptyStats();
         });
         

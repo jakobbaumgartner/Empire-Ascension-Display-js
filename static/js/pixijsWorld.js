@@ -13,7 +13,7 @@ const hexContainer = new PIXI.Container();
 app.stage.addChild(hexContainer);
 
 // Load the background image
-PIXI.Loader.shared.add('background', 'background.jpg').load((loader, resources) => {
+PIXI.Loader.shared.add('background', 'static/images/background.jpg').load((loader, resources) => {
     const background = new PIXI.Sprite(resources.background.texture);
     // Scale the background image to fit the screen
     const scaleX = app.renderer.width / background.texture.width;
@@ -97,31 +97,8 @@ window.addEventListener('resize', () => {
 
 // ----------------- Other functions -----------------
 
-// let lastHighlighted = null; // To keep track of the last highlighted hexagon
-// let selectedHexagon = null;
-
 // Make the hexContainer marked 
 hexContainer.interactive = true;
-// hexContainer.on('mousemove', (event) => {
-//     const pos = event.data.getLocalPosition(hexContainer);
-//     const col = Math.round(pos.x / (hexWidth * 0.75));
-//     const row = Math.round((pos.y - (col % 2) * (hexHeight / 2)) / hexHeight);
-    
-//     if (col >= 0 && col < gridWidth && row >= 0 && row < gridHeight) {
-//         const index = row * gridWidth + col;
-//         const hexagon = hexContainer.children[index];
-
-//         if (lastHighlighted && lastHighlighted !== hexagon && !lastHighlighted.clicked) {
-//             lastHighlighted.tint = 0xffffff;
-//         }
-
-//         if (!hexagon.clicked) {
-//             hexagon.tint = 0x000000;
-//         }
-
-//         lastHighlighted = hexagon;
-//     }
-// });
 
 // Hexagon click handler
 hexContainer.on('mousedown', (event) => {

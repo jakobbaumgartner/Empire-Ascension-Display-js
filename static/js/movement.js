@@ -1,16 +1,6 @@
 // Create a new Map to store the trajectories
 const listOfTrajectories = new Map();
 
-// // Function to create a trajectory object
-// function createTrajectoryObject(key, soldierSprite, flagSprite, trajectory) {
-//     return {
-//         key: key,
-//         soldier_sprite: soldierSprite,
-//         flag_sprite: flagSprite,
-//         trajectory: trajectory
-//     };
-// }
-
 // Function to add a trajectory to the list of trajectories
 function addTrajectory(key, trajectory) {
     listOfTrajectories.set(key, trajectory);
