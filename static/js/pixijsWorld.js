@@ -143,8 +143,11 @@ hexContainer.on('mousedown', (event) => {
             // console.log(hexagon);
             displayHexagonStats(hexagon) // Display hexagon stats in the selection container
 
+            console.log("SELECTION")
+            console.log(selectedObject.axial_coordinates);
+
             // If an existig unit is selected, call the move function
-            if (selectedObject.object_type === 'soldier') {
+            if (selectedObject.object_type === 'soldier' && selectedObject.axial_coordinates !== null) {
 
                 console.log("Moving soldier...");
                 const moveGoal = {
@@ -180,7 +183,10 @@ hexContainer.on('mousedown', (event) => {
 
                     addTrajectory(trajectoryKey, trajectory);
 
-                    apiMove(trajectory, hexagon);
+                    var start = selectedObject.axial_coordinates;
+                    var goal = hexagon.axial_coordinates;
+
+                    apiMove(start, goal);
 
                     deselectSelectedObject();
 
@@ -189,8 +195,14 @@ hexContainer.on('mousedown', (event) => {
                     selectedObject.object_type = 'hexagon';
                     selectedObject.object_element = hexagon;
 
-                });
+                })
 
+            }
+            else if (selectedObject.object_type === 'soldier' && selectedObject.axial_coordinates === null) {
+                console.log("Selecting soldier coordinates...");
+                const hex = hexGrid.get(object_id);
+                selectedObject.axial_coordinates = hex.axial_coordinates;
+                console.log(hex);
             }
 
           
@@ -238,7 +250,7 @@ function createSoldier(resources, selected, hexContainer, clickPosition, centerO
     soldierContainer.buttonMode = true;
     
     soldierContainer.on('mousedown', (event) => {
-        event.stopPropagation();
+        // event.stopPropagation();
         
         // Deselect the previously selected soldier if it's not the same as the current one
         if (selectedObject.object_type === 'soldier' && selectedObject.object_element !== soldierContainer) {

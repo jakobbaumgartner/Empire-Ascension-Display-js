@@ -1,7 +1,8 @@
 var selectedObject = {
     object_id: null,
     object_type: null,
-    object_element: null
+    object_element: null,
+    axial_coordinates: null,
 };
 
 // Function to deselect the selected object
@@ -16,5 +17,6 @@ function deselectSelectedObject()
     selectedObject.object_id = null;
     selectedObject.object_type = null;
     selectedObject.object_element = null;
+    selectedObject.axial_coordinates = null;
 
 }

@@ -3,11 +3,10 @@ const socket = io(); // Initialize socket.io (default to web host of page)
 let lastServerTime = 0; // Variable to store the last received server time
 let latency = 0; // Variable to store the calculated latency
 
-function apiMove(selectedObject, hexagonTile) {
+function apiMove(start, goal) {
     // Move the selected object to the move goal
-    console.log(selectedObject);
-    console.log(hexagonTile);
-}
+    console.log('Selected Object:', start);
+    console.log('Hexagon Tile:', goal)}
 
 // Function to calculate latency
 function calculateLatency() {
