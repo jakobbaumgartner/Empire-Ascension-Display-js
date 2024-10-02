@@ -3,7 +3,6 @@ const socket = io(); // Initialize socket.io (default to web host of page)
 let lastServerTime = 0; // Variable to store the last received server time
 let latency = 0; // Variable to store the calculated latency
 
-
 function apiMove(selectedObject, hexagonTile) {
     // Move the selected object to the move goal
     console.log(selectedObject);
@@ -52,6 +51,11 @@ function updateCurrentTime(serverTime) {
     currentTimeElement.textContent = `${hours}:${minutes}:${seconds}`;
 }
 
+// Function to request the grid data from the server
+function requestGridData() {
+    socket.emit('getGrid');
+}
+
 // Add event listener for all incoming socket events
 socket.onAny((eventName, ...args) => {
     if (eventName !== 'server_time') {
@@ -66,9 +70,17 @@ socket.on('server_time', (data) => {
     // console.log('Server time:', new Date(lastServerTime * 1000).toISOString());
 });
 
+// Listener for 'gridData' event to receive the map data
+socket.on('gridData', (data) => {
+    console.log('Received grid data:', data);
+    populateHexagonalGridData(data); // Populate the grid data
+    displayHexagonalGrid(hexContainer, hexGrid); // Display the grid
+});
+
 // Log when connected to the server
 socket.on('connect', () => {
     console.log('Connected to server');
+    requestGridData(); // Request the grid data upon connection
 });
 
 // Log any connection errors
