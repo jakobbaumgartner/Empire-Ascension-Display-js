@@ -175,7 +175,7 @@ function getHexagonSprite(q, r) {
     return null;
 }
 
-// Add these conversion functions
+// -------- Hexagonal Grid Functions --------
 function axial_to_oddq(hex) {
     var col = hex.q;
     var row = hex.r + (hex.q - (hex.q&1)) / 2;

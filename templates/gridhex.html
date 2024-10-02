@@ -31,6 +31,18 @@
             <div id="selectionContainerContentInner"></div>
     </div>
 
+    <div class="banner-container">
+        <div class="banner-inner">
+            <!-- <span class="banner-item" id="connectionStatus">●</span> -->
+            <span class="banner-item" id="serverDelay">0ms</span>
+            <span class="banner-item banner-divider">|</span>
+            <span class="banner-item" id="currentTime">00:00:00</span>
+            <span class="banner-item banner-divider">|</span>
+            <span class="banner-item" id="bitcoinResource">₿ 0.000</span>
+        </div>
+    </div>
+    
+
     <!-- Import the client.js script -->
     <script src="{{ url_for('static', filename='js/client.js') }}"></script>
     <!-- Import the movement.js script -->
