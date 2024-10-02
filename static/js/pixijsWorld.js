@@ -133,12 +133,12 @@ hexContainer.on('mousedown', (event) => {
 
         console.log('Hex coords:', hexCoords);
 
-        console.log(hexGridData);
-        console.log(object_id);
+        // console.log(hexGridData);
+        // console.log(object_id);
         
             const hexagon = hexGridData.get(object_id);
 
-            console.log(hexagon);
+            // console.log(hexagon);
             displayHexagonStats(hexagon) // Display hexagon stats in the selection container
 
             // If an existig unit is selected, call the move function

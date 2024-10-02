@@ -4,10 +4,9 @@ let lastServerTime = 0; // Variable to store the last received server time
 let latency = 0; // Variable to store the calculated latency
 
 
-function apiMove(selectedObject, moveGoal, hexagonTile) {
+function apiMove(selectedObject, hexagonTile) {
     // Move the selected object to the move goal
     console.log(selectedObject);
-    console.log(moveGoal);
     console.log(hexagonTile);
 }
 
@@ -56,10 +55,8 @@ function updateCurrentTime(serverTime) {
 // Add event listener for all incoming socket events
 socket.onAny((eventName, ...args) => {
     if (eventName !== 'server_time') {
-        lastServerTime = args[0].time;
-        updateCurrentTime(lastServerTime);
+        console.log(`Received event: ${eventName}`, args);
     }
-    console.log(`Received event: ${eventName}`, args);
 });
 
 // Specific listener for 'server_time' event
