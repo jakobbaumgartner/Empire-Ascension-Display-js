@@ -9,6 +9,8 @@
     <!-- Importing the Simplex Noise library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>  
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <!-- Import socket.io library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <!-- Import stylesheet-->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/unitsDisplay.css') }}">
@@ -34,7 +36,7 @@
     <div class="banner-container">
         <div class="banner-inner">
             <!-- <span class="banner-item" id="connectionStatus">●</span> -->
-            <span class="banner-item" id="serverDelay">0ms</span>
+            <span class="banner-item" id="serverDelay"><span style="font-size: 20px;">●</span> 0 ms</span>
             <span class="banner-item banner-divider">|</span>
             <span class="banner-item" id="currentTime">00:00:00</span>
             <span class="banner-item banner-divider">|</span>
