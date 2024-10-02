@@ -73,8 +73,8 @@ socket.on('server_time', (data) => {
 // Listener for 'gridData' event to receive the map data
 socket.on('gridData', (data) => {
     console.log('Received grid data:', data);
-    populateHexagonalGridData(data); // Populate the grid data
-    displayHexagonalGrid(hexContainer, hexGrid); // Display the grid
+    var hexGrid = createHexagonalGridData(data)
+    displayHexagonalGrid(hexContainer, hexGrid) 
 });
 
 // Log when connected to the server

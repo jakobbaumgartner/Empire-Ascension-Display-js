@@ -16,43 +16,9 @@ const terrainTypes = {
     mountain: 0xA28B55 // Brown color for mountains
 };
 
-const terrainDescriptions = {
-    water: "Slows movement significantly unless you have a boat or specialized unit.",
-    beach: "Easy to traverse, allowing quick movement along the shoreline with no obstacles.",
-    grass: "Flat terrain that enables fast and efficient movement across open fields.",
-    forest: "Dense trees slow down movement, but provide good cover and concealment.",
-    mountain: "Difficult terrain to traverse, but offers strategic high ground and defensive benefits."
-};
-
-// Function to load terrain data from JSON file
-async function loadTerrainData() {
-    try {
-        const response = await fetch('terrain.json');
-        const data = await response.json();
-      
-        return data;
-    } catch (error) {
-        console.error('Error loading terrain data:', error);
-    }
-}
-
-// Create a Simplex noise generator instance
-const noise = new SimplexNoise();
-
-// Function to determine the terrain type based on noise value
-function getTerrainType(noiseValue) {
-    if (noiseValue < -0.3) return 'water'; // If noise value is less than -0.3, it's water
-    if (noiseValue < -0.1) return 'beach'; // If noise value is less than -0.1, it's beach
-    if (noiseValue < 0.2) return 'grass'; // If noise value is less than 0.2, it's grass
-    if (noiseValue < 0.5) return 'forest'; // If noise value is less than 0.5, it's forest
-    return 'mountain'; // Otherwise, it's a mountain
-}
-
 // Function to create a hexagon graphic at a given position with axial coordinates (i, j, k)
 function createHexagon(x, y, i, j, k, terrain) {
     const hexagon = new PIXI.Graphics(); // Create a new PIXI Graphics object for the hexagon
-    // const noiseValue = noise.noise2D(i * 0.05, j * 0.05); // Get noise value based on position
-    // const terrain = getTerrainType(noiseValue); // Determine terrain type based on noise value
 
     // Begin drawing the hexagon with the appropriate terrain color
     hexagon.beginFill(terrainTypes[terrain]);
@@ -86,52 +52,42 @@ function createHexagon(x, y, i, j, k, terrain) {
     return hexagon; // Return the created hexagon
 }
 
-var hexGrid = new Map();
-
+var hexGrid = new Map(); // Initialize the hex grid data structure
 
 // Function to create a hexagonal grid data structure
-// Function to create a hexagonal grid data structure
-function createHexagonalGridData() {
-    const hexGrid = new Map(); // Initialize the hex grid data structure
+function createHexagonalGridData(gridData) {
+    console.log("Creating Hex Grid Data");
+    hexGrid.clear(); // Clear the global hexGrid to ensure it's empty before populating
 
-    // Loop through each column and row to create hexagons
-    for (let col = 0; col < gridWidth; col++) {
-        for (let row = 0; row < gridHeight; row++) {
-            const oddq = { col, row };
-            const { q, r, s } = oddq_to_axial(oddq);
+    // Loop through each hexagon data from the server
+    gridData.forEach(hexData => {
+        const { hex_id, description, hex_cartesian, axial_coordinates, terrain_type, state_hash, timestamp, buildings, sprite } = hexData;
 
-            const { x, y } = oddq_offset_to_pixel(oddq);
+        // Create a new hexData object with the received data
+        const newHexData = {
+            hex_id: hex_id,
+            description: description,
+            hex_cartesian: hex_cartesian,
+            axial_coordinates: axial_coordinates,
+            terrain_type: terrain_type,
+            state_hash: state_hash,
+            timestamp: timestamp,
+            buildings: buildings,
+            sprite: sprite
+        };
 
-            // Get noise value and terrain type for the hexagon
-            const noiseValue = noise.noise2D(q * 0.05, r * 0.05); // Get noise value based on position
-            const terrain = getTerrainType(noiseValue); // Determine terrain type based on noise value
+        // Store the newHexData in the map
+        hexGrid.set(hex_id, newHexData);
+    });
 
-            // Create a unique hex_id or use q,r,s coordinates as an identifier
-            const hex_id = `${q},${r}`;
-
-            // Example data for each hexagon
-            const hexData = {
-                hex_id: hex_id,
-                description: terrainDescriptions[terrain], // Description of the terrain
-                hex_cartesian: { x, y }, // Store the cartesian coordinates
-                axial_coordinates: { q, r, s }, // Store the axial coordinates
-                terrain_type: terrain, // Store the terrain type
-                state_hash: null, // Placeholder for state_hash
-                timestamp: Date.now(), // Example timestamp
-                buildings: [], // Placeholder for buildings, can be an array
-                sprite: null // Placeholder for sprite
-            };
-
-            // Store the hexData in the map
-            hexGrid.set(hex_id, hexData);
-        }
-    }
     console.log(hexGrid);
     return hexGrid;
 }
 
 // Function to display the hexagonal grid on the screen
 function displayHexagonalGrid(hexContainer, hexGrid) {
+    console.log(hexGrid)
+    console.log("Displaying Hex Grid")
     hexGrid.forEach((hexData, key) => {
         const { q, r, s } = hexData.axial_coordinates;
         const { x, y } = hexData.hex_cartesian;

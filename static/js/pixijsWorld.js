@@ -9,7 +9,7 @@ const app = new PIXI.Application({
 document.getElementById('hexCanvas').appendChild(app.view);
 
 // Creating a container to hold the hexagons
-const hexContainer = new PIXI.Container();
+var hexContainer = new PIXI.Container();
 app.stage.addChild(hexContainer);
 
 // Load the background image
@@ -35,9 +35,9 @@ PIXI.Loader.shared.add('background', 'static/images/background.jpg').load((loade
 });
 
 // Create a hexagonal grid with the specified width and height
-const hexGridData = createHexagonalGridData();
+// const hexGridData = createHexagonalGridData();
 // Display the hexagonal grid on the screen
-displayHexagonalGrid(hexContainer, hexGridData, hexWidth, hexHeight);
+// displayHexagonalGrid(hexContainer, hexGridData, hexWidth, hexHeight);
 
 // ----------------- Dragging and zooming -----------------
 
@@ -129,14 +129,16 @@ hexContainer.on('mousedown', (event) => {
 
         const pos = event.data.getLocalPosition(hexContainer);
         const hexCoords = pixel_to_flat_hex(pos.x, pos.y);
+        console.log(hexCoords)
         const object_id = `${hexCoords.q},${hexCoords.r}`;
+        console.log(object_id)
 
         console.log('Hex coords:', hexCoords);
 
-        // console.log(hexGridData);
+        console.log(hexGrid);
         // console.log(object_id);
         
-            const hexagon = hexGridData.get(object_id);
+            const hexagon = hexGrid.get(object_id);
 
             // console.log(hexagon);
             displayHexagonStats(hexagon) // Display hexagon stats in the selection container
