@@ -16,11 +16,11 @@ app.stage.addChild(hexContainer);
 PIXI.Loader.shared.add('background', 'static/images/background.jpg').load((loader, resources) => {
     const background = new PIXI.Sprite(resources.background.texture);
     // Scale the background image to fit the screen
-    const scaleX = app.renderer.width / background.texture.width;
-    const scaleY = app.renderer.height / background.texture.height;
-    const scale = Math.min(scaleX, scaleY);
+    // const scaleX = app.renderer.width / background.texture.width;
+    // const scaleY = app.renderer.height / background.texture.height;
+    // const scale = Math.min(scaleX, scaleY);
 
-    background.scale.set(scale); // Set the scale of the background image
+    // background.scale.set(scale); // Set the scale of the background image
     background.x = 0; // Position the background image at the top-left corner
     background.y = 0;
 

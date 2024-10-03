@@ -19,6 +19,16 @@
 <body>
     <!-- The container for the PixiJS application -->
     <div id="hexCanvas"></div>
+    <div class="banner-container">
+        <div class="banner-inner">
+            <!-- <span class="banner-item" id="connectionStatus">●</span> -->
+            <span class="banner-item" id="serverDelay"><span style="font-size: 20px;">●</span> 00 ms</span>
+            <span class="banner-item banner-divider">|</span>
+            <span class="banner-item" id="currentTime">00:00:00</span>
+            <span class="banner-item banner-divider">|</span>
+            <span class="banner-item" id="bitcoinResource">₿ 0.000</span>
+        </div>
+    </div>
     <!-- Unit display container -->
     <div class="unit-container" id="unitContainer">
         <div class="unit-toggle-btn down" id="unitToggleBtn">
@@ -32,17 +42,9 @@
         <div id="selectionContainerContent">
             <div id="selectionContainerContentInner"></div>
     </div>
-
-    <div class="banner-container">
-        <div class="banner-inner">
-            <!-- <span class="banner-item" id="connectionStatus">●</span> -->
-            <span class="banner-item" id="serverDelay"><span style="font-size: 20px;">●</span> 00 ms</span>
-            <span class="banner-item banner-divider">|</span>
-            <span class="banner-item" id="currentTime">00:00:00</span>
-            <span class="banner-item banner-divider">|</span>
-            <span class="banner-item" id="bitcoinResource">₿ 0.000</span>
-        </div>
     </div>
+
+
     
 
     <!-- Import the client.js script -->

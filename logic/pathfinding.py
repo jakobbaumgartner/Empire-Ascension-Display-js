@@ -30,6 +30,8 @@ def get_neighbors(hex_grid, q, r):
             neighbors.append((neighbor_q, neighbor_r))
     return neighbors
 
+import heapq
+
 def a_star_pathfinding(hex_grid, start, goal):
     start_q, start_r = start
     goal_q, goal_r = goal
@@ -45,11 +47,15 @@ def a_star_pathfinding(hex_grid, start, goal):
 
         if current == goal:
             path = []
+            total_cost = 0  # Initialize total cost
             while current in came_from:
                 path.append(current)
+                total_cost += hex_grid[f"{current[0]},{current[1]}"]["movement_cost"]
                 current = came_from[current]
             path.append(start)
             path.reverse()
+            # Log the total cost
+            print(f"Total path cost: {total_cost}")
             return path
 
         for neighbor in get_neighbors(hex_grid, *current):
@@ -63,4 +69,3 @@ def a_star_pathfinding(hex_grid, start, goal):
                     heapq.heappush(open_set, (f_score[neighbor], neighbor))
 
     return None  # No path found
-
