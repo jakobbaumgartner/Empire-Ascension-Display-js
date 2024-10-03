@@ -479,44 +479,86 @@ function displayPath(path) {
     const pathContainer = new PIXI.Container();
     pathContainer.name = 'pathContainer';
 
-    var x = 0
-    var y = 0
+    var points = [];
+    var lastX = 0;
+    var lastY = 0;
 
-    // Draw the path
-    path.forEach((coord, index) => {
+    // Collect points and display movement costs
+    path.forEach((coord) => {
         const [q, r] = coord;
         const hexId = `${q},${r}`;
         const hex = hexGrid.get(hexId);
-        x = hex.hex_cartesian.x;
-        y = hex.hex_cartesian.y;
+        const x = hex.hex_cartesian.x;
+        const y = hex.hex_cartesian.y;
 
-        // Create a colored dot
-        const dot = new PIXI.Graphics();
-        dot.beginFill(0xFF0000); // Red color
-        dot.drawCircle(0, 0, 5); // Draw a circle with radius 5
-        dot.endFill();
-        dot.position.set(x, y);
-        pathContainer.addChild(dot);
+        points.push(new PIXI.Point(x, y));
+        lastX = x;
+        lastY = y;
 
-        // Optionally, add text to show the order of the path
-        const text = new PIXI.Text(index.toString(), {
+        // Display movement cost
+        const movementCost = hex.movement_cost || 1; // Default to 1 if not set
+        const text = new PIXI.Text(movementCost.toString(), {
             fontFamily: 'Arial',
-            fontSize: 12,
-            fill: 0xFFFFFF
+            fontSize: 80,
+            fill: 0xFFFFFF,
+            stroke: 0x000000,
+            strokeThickness: 10,
+            resolution: 5 // Increase the resolution for sharper text
         });
+        text.scale.set(0.25); // Scale down to original size
         text.anchor.set(0.5);
-        text.position.set(x, y);
+        text.position.set(x, y + 15); // Position slightly below the path
         pathContainer.addChild(text);
     });
 
+    // Draw the yellow glow
+    const glowGraphics = new PIXI.Graphics();
+    glowGraphics.lineStyle(15, 0x444444, 0.5); // Black-ish color, 15px width, 50% opacity
+    glowGraphics.moveTo(points[0].x, points[0].y);
+
+    for (let i = 0; i < points.length - 1; i++) {
+        const p0 = i > 0 ? points[i - 1] : points[0];
+        const p1 = points[i];
+        const p2 = points[i + 1];
+        const p3 = i < points.length - 2 ? points[i + 2] : p2;
+
+        const cp1x = p1.x + (p2.x - p0.x) / 6;
+        const cp1y = p1.y + (p2.y - p0.y) / 6;
+        const cp2x = p2.x - (p3.x - p1.x) / 6;
+        const cp2y = p2.y - (p3.y - p1.y) / 6;
+
+        glowGraphics.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2.x, p2.y);
+    }
+
+    pathContainer.addChild(glowGraphics);
+
+    // Draw the smooth curve
+    const graphics = new PIXI.Graphics();
+    graphics.lineStyle(5, 0x000000, 1);
+    graphics.moveTo(points[0].x, points[0].y);
+
+    for (let i = 0; i < points.length - 1; i++) {
+        const p0 = i > 0 ? points[i - 1] : points[0];
+        const p1 = points[i];
+        const p2 = points[i + 1];
+        const p3 = i < points.length - 2 ? points[i + 2] : p2;
+
+        const cp1x = p1.x + (p2.x - p0.x) / 6;
+        const cp1y = p1.y + (p2.y - p0.y) / 6;
+        const cp2x = p2.x - (p3.x - p1.x) / 6;
+        const cp2y = p2.y - (p3.y - p1.y) / 6;
+
+        graphics.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2.x, p2.y);
+    }
+
+    pathContainer.addChild(graphics);
+
     // Add the path container to the hexContainer
-    console.log(x)
     hexContainer.addChild(pathContainer);
 
     // Add flag
-    displayFlag(x, y, hexContainer)
+    displayFlag(lastX, lastY, hexContainer);
 }
-
 
 function clearExistingPath() {
     // Find and remove the path container

@@ -61,7 +61,7 @@ function createHexagonalGridData(gridData) {
 
     // Loop through each hexagon data from the server
     gridData.forEach(hexData => {
-        const { hex_id, description, hex_cartesian, axial_coordinates, terrain_type, state_hash, timestamp, buildings, sprite } = hexData;
+        const { hex_id, description, hex_cartesian, axial_coordinates, terrain_type, state_hash, timestamp, buildings, sprite, movement_cost } = hexData;
 
         // Create a new hexData object with the received data
         const newHexData = {
@@ -73,7 +73,8 @@ function createHexagonalGridData(gridData) {
             state_hash: state_hash,
             timestamp: timestamp,
             buildings: buildings,
-            sprite: sprite
+            sprite: sprite,
+            movement_cost: movement_cost
         };
 
         // Store the newHexData in the map
