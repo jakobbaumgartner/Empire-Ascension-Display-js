@@ -25,7 +25,8 @@ movement_costs = {
     'beach': 1,
     'grass': 3,
     'forest': 5,
-    'mountain': 8
+    'mountain': 8,
+    'road': 0.5
 }
 
 terrain_descriptions = {

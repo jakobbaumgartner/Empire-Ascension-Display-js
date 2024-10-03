@@ -96,11 +96,11 @@ loadBattleUnits().then(() => {
             unitCost.classList.add('unit-cost');
             unitCost.textContent = `Cost: ${unit.unit_cost} $`;
 
+            unitCost.innerHTML = `Cost: ${unit.unit_cost} <span style="color: orange; font-weight: bold;">₿</span>`;
             // Create a div element for the monthly expense
             const monthlyExpense = document.createElement('div');
             monthlyExpense.classList.add('unit-cost');
-            monthlyExpense.textContent = `Monthly: ${unit.unit_monthly} $`;
-
+            monthlyExpense.innerHTML = `Monthly: ${unit.unit_monthly} <span style="color: orange; font-weight: bold;">₿</span>`;
             // Append the elements to the unit card
             unitCard.appendChild(unitImage);
             unitCard.appendChild(unitName);
@@ -111,8 +111,7 @@ loadBattleUnits().then(() => {
             unitCard.addEventListener('click', function() {
 
                 // If selected soldier, deselect it first
-                if (selectedObject.object_type == 'soldier')
-                    {
+                if (selectedObject.object_type == 'soldier') {
                         deselectSoldier(selectedObject.object_element)
                     }
                 console.log(unit.unit_id);
@@ -125,5 +124,52 @@ loadBattleUnits().then(() => {
 
             unitContainer.appendChild(unitCard);
         });
+
+        // Display road segment
+        // Create a road creation card
+        const roadCard = document.createElement('div');
+        roadCard.classList.add('unit-card', 'unselectable');
+        roadCard.id = 'card-road';
+
+        // Create an image element for the road with the correct path
+        const roadImage = document.createElement('img');
+        roadImage.src = '/static/images/road.png';
+        roadImage.alt = 'Road Segment';
+        roadImage.style.height = '65px';
+
+        // Create a div element for the road name
+        const roadName = document.createElement('div');
+        roadName.classList.add('unit-name');  // Changed class to 'unit-name' for consistency
+        roadName.textContent = 'Road Tile';
+
+        // Create divs for the road cost and monthly expense
+        const roadCost = document.createElement('div');
+        roadCost.classList.add('unit-cost');
+        roadCost.innerHTML = 'Cost: 100 <span style="color: orange; font-weight: bold;">₿</span>';
+        const roadMonthlyExpense = document.createElement('div');
+        roadMonthlyExpense.classList.add('unit-cost');
+        roadMonthlyExpense.innerHTML = 'Monthly: 5 <span style="color: orange; font-weight: bold;">₿</span>';
+
+
+
+        // Append the elements to the road card
+        roadCard.appendChild(roadImage);
+        roadCard.appendChild(roadName);
+        roadCard.appendChild(roadCost);
+        roadCard.appendChild(roadMonthlyExpense);
+
+        // Add a click event listener to the road card
+        roadCard.addEventListener('click', function() {
+            console.log('Road Segment selected');
+            selectedObject.object_id = 'road';
+            selectedObject.object_type = 'road_segment';
+            displayRoadStats()
+        });
+
+        // Append the road card to the unit container
+        unitContainer.appendChild(roadCard);
+
+        displayRoadStats()
+
     }
 });

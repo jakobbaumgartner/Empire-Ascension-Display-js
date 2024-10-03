@@ -32,7 +32,7 @@ function displayUnitStats(unit) {
         { label: 'Damage', value: unit.unit_damage },
         { label: 'Speed', value: unit.unit_speed },
         { label: 'Attack Range', value: unit.unit_attack_range },
-        { label: 'Cost', value: `${unit.unit_cost} (${unit.unit_monthly} monthly)` }
+        { label: 'Cost', value: `${unit.unit_cost} (${unit.unit_monthly} monthly) <span style="color: orange; font-weight: bold;">₿</span>` }
     ];
 
     stats.forEach(stat => {
@@ -43,6 +43,51 @@ function displayUnitStats(unit) {
 
     statsDisplay.appendChild(statsList);
 }
+
+function displayRoadStats() {
+    const statsDisplay = document.getElementById('selectionContainerContentInner');
+    statsDisplay.innerHTML = '';
+
+    const terrainType = 'road';  // Defining a static terrain type for roads
+
+    // Road image placeholder. Ensure you have an image named 'road.webp'.
+    const roadImage = document.createElement('img');
+    roadImage.classList.add('unit-image');
+    roadImage.src = `/static/images/road.png`;
+    roadImage.style.width = '100%';
+    roadImage.style.borderRadius = '8px';
+    roadImage.style.objectFit = 'cover';
+    roadImage.alt = 'Road image';
+    statsDisplay.appendChild(roadImage);
+
+    // Road description
+    const roadDescription = document.createElement('p');
+    roadDescription.classList.add('unit-description');
+    roadDescription.textContent = 'Roads provide fast and efficient travel, connecting various places smoothly.';
+    statsDisplay.appendChild(roadDescription);
+
+    const statsList = document.createElement('ul');
+    statsList.classList.add('stats-list');
+
+    const stats = [
+        { label: 'Terrain', value: capitalizeFirstLetter(terrainType) },
+        { 
+            label: 'Cost', 
+            value: '100 (5 monthly) <span style="color: orange; font-weight: bold;">₿</span>' 
+        }
+
+        // Add any additional road-specific stats here if needed.
+    ];
+
+    stats.forEach(stat => {
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `<span class="stat-label">${stat.label}:</span> <span class="stat-value">${stat.value}</span>`;
+        statsList.appendChild(listItem);
+    });
+
+    statsDisplay.appendChild(statsList);
+}
+
 
 function displayHexagonStats(hexagon) {
     const statsDisplay = document.getElementById('selectionContainerContentInner');
