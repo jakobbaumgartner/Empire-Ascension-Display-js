@@ -20,6 +20,14 @@ terrain_types = {
     'mountain': 0xA28B55
 }
 
+movement_costs = {
+    'water': 10,
+    'beach': 1,
+    'grass': 3,
+    'forest': 5,
+    'mountain': 8
+}
+
 terrain_descriptions = {
     'water': "Slows movement significantly unless you have a boat or specialized unit.",
     'beach': "Easy to traverse, allowing quick movement along the shoreline with no obstacles.",
@@ -69,7 +77,8 @@ def generate_hexagonal_map():
                 'state_hash': None,
                 'timestamp': time.time(),
                 'buildings': [],
-                'sprite': None
+                'sprite': None,
+                'movement_cost': movement_costs[terrain]
             }
 
             hex_grid[hex_id] = hex_data

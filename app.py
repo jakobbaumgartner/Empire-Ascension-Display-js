@@ -3,6 +3,8 @@ from flask_socketio import SocketIO
 import time
 import threading
 from logic.generateMap import generate_hexagonal_map
+from logic.pathfinding import a_star_pathfinding
+
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -36,6 +38,14 @@ def handle_get_grid():
     # Convert hex_map to a list of its values
     hex_map_list = list(hex_map.values())
     socketio.emit('gridData', hex_map_list)
+
+@socketio.on('findPath')
+def handle_find_path(data):
+    start = (data['start']['q'], data['start']['r'])
+    goal = (data['goal']['q'], data['goal']['r'])
+    path = a_star_pathfinding(hex_map, start, goal)
+    socketio.emit('pathFound', {'path': path})
+
 
 if __name__ == '__main__':
     print(hex_map)

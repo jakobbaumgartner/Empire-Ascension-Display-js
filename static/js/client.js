@@ -6,7 +6,15 @@ let latency = 0; // Variable to store the calculated latency
 function apiMove(start, goal) {
     // Move the selected object to the move goal
     console.log('Selected Object:', start);
-    console.log('Hexagon Tile:', goal)}
+    console.log('Hexagon Tile:', goal)
+    socket.emit('findPath', { start: start, goal: goal });
+}
+
+socket.on('pathFound', (data) => {
+    console.log('Received path:', data.path);
+    displayPath(data.path);
+});
+
 
 // Function to calculate latency
 function calculateLatency() {
@@ -15,6 +23,7 @@ function calculateLatency() {
         const endTime = Date.now();
         latency = endTime - startTime;
         updateLatencyDisplay();
+        
     });
 }
 

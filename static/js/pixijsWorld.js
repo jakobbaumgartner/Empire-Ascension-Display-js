@@ -370,6 +370,10 @@ function createGlowTexture() {
 // New function to display the flag
 function displayFlag(x, y, container) {
     return new Promise((resolve) => {
+
+        // Remove any existing flags before creating a new one
+        removeExistingFlags();
+
         loader.load((loader, resources) => {
             const flagContainer = new PIXI.Container();
             
@@ -464,6 +468,84 @@ function displayFlag(x, y, container) {
             });
 
             resolve(goalFlag); // Resolve the promise with the goal flag sprite
+        });
+    });
+}
+
+function displayPath(path) {
+    clearExistingPath();
+
+    // Create a new PIXI.Container for the path
+    const pathContainer = new PIXI.Container();
+    pathContainer.name = 'pathContainer';
+
+    var x = 0
+    var y = 0
+
+    // Draw the path
+    path.forEach((coord, index) => {
+        const [q, r] = coord;
+        const hexId = `${q},${r}`;
+        const hex = hexGrid.get(hexId);
+        x = hex.hex_cartesian.x;
+        y = hex.hex_cartesian.y;
+
+        // Create a colored dot
+        const dot = new PIXI.Graphics();
+        dot.beginFill(0xFF0000); // Red color
+        dot.drawCircle(0, 0, 5); // Draw a circle with radius 5
+        dot.endFill();
+        dot.position.set(x, y);
+        pathContainer.addChild(dot);
+
+        // Optionally, add text to show the order of the path
+        const text = new PIXI.Text(index.toString(), {
+            fontFamily: 'Arial',
+            fontSize: 12,
+            fill: 0xFFFFFF
+        });
+        text.anchor.set(0.5);
+        text.position.set(x, y);
+        pathContainer.addChild(text);
+    });
+
+    // Add the path container to the hexContainer
+    console.log(x)
+    hexContainer.addChild(pathContainer);
+
+    // Add flag
+    displayFlag(x, y, hexContainer)
+}
+
+
+function clearExistingPath() {
+    // Find and remove the path container
+    const pathContainer = hexContainer.children.find(child => child.name === 'pathContainer');
+    if (pathContainer) {
+        hexContainer.removeChild(pathContainer);
+    }
+
+    // Find and remove all existing flags
+    removeExistingFlags();
+}
+
+function removeExistingFlags() {
+    const flagsToRemove = hexContainer.children.filter(child => 
+        child instanceof PIXI.Container && 
+        child.children.some(sprite => sprite.texture === PIXI.Texture.from('goalFlag'))
+    );
+
+    flagsToRemove.forEach(flagContainer => {
+        gsap.to(flagContainer, {
+            alpha: 0,
+            duration: 0.3,
+            ease: "power1.inOut",
+            onComplete: () => {
+                hexContainer.removeChild(flagContainer);
+                if (flagContainer.children[1].trajectory_key) {
+                    removeTrajectory(flagContainer.children[1].trajectory_key);
+                }
+            }
         });
     });
 }
