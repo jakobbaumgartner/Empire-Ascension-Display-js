@@ -60,34 +60,30 @@ def handle_find_path(data):
     socketio.emit('pathFound', {'path': path})
     print(f"Generated path from {start} to {goal}")
 
-@socketio.on('placeRoad')
-def handle_place_road(data):
-    # Extract the coordinates and road ID from the received data
-    coordinates = data['coordinates']
-    roadId = data['roadId']
-    
-    # Log the information in the terminal
-    print(f"Placing road with ID '{roadId}' at coordinates {coordinates}")
-    
-    # Add road to the roads list or perform other logic as needed
-    print(coordinates)
-    # Extract q and r values
-    q_value = coordinates['q']
-    r_value = coordinates['r']
-    # Build the key string in the format 'q_value,r_value'
-    key = f"{q_value},{r_value}"
-    # Get element from hex_map using the key
-    element = hex_map.get(key)
 
-    # Append road type to hex buildings list
-    element['buildings'].append(roadId)
-    element['movement_cost'] = movement_costs['road'];
-    print(element)
-
+@socketio.on('generateRoad')
+def handle_generate_road(data):
+    start = (data['start']['q'], data['start']['r'])
+    end = (data['end']['q'], data['end']['r'])
+    
+    # Use pathfinding to find the path between start and end
+    road_path = pathfinding(hex_map, start, end, False, False)
+    
+    # Iterate over the path and update each hexagon as a road
+    for coord in road_path:
+        q, r = coord
+        key = f"{q},{r}"
+        element = hex_map.get(key)
+        
+        if element:
+            element['buildings'].append('road')
+            element['movement_cost'] = movement_costs['road']
+    
     # Emit the updated grid data to the client
     socketio.emit('gridData', list(hex_map.values()))
-
     
+    print(f"Generated road from {start} to {end} with path: {road_path}")
+
 
 
 

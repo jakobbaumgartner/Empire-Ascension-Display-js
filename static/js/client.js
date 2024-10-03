@@ -99,9 +99,29 @@ socket.on('connect_error', (error) => {
 
 // Send server information about new road tile placement
 function placeRoad(axialCoordinates, roadId) {
+
+    // Check if this is start or end of road
+    if (!selectedObject.axial_coordinates) {
+        selectedObject.axial_coordinates = axialCoordinates;
+    } else {
+        console.log('Existing axial coordinates:', selectedObject.axial_coordinates);
+        console.log('Input axial coordinates:', axialCoordinates);
+
+        // Emit a socket event to the server with road generation data
+        socket.emit('generateRoad', {
+            start: selectedObject.axial_coordinates,
+            end: axialCoordinates
+        });
+
+        deselectSelectedObject()
+        
+    }
+
+
+    console.log(selectedObject)
     // Log road placement information
-    console.log('Placing road:', roadId, 'at:', axialCoordinates);
+    // console.log('Placing road:', roadId, 'at:', axialCoordinates);
     
-    // Emit a socket event to the server with road placement data
-    socket.emit('placeRoad', { coordinates: axialCoordinates, roadId: roadId });
+    // // Emit a socket event to the server with road placement data
+    // socket.emit('placeRoad', { coordinates: axialCoordinates, roadId: roadId });
 }
