@@ -2,8 +2,8 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO
 import time
 import threading
-from logic.generateMap import generate_hexagonal_map
-from logic.pathfinding import a_star_pathfinding
+from logic.generateMap import generate_hexagonal_map, movement_costs
+from logic.pathfinding import pathfinding
 
 
 app = Flask(__name__)
@@ -14,6 +14,9 @@ server_start_time = time.time()
 
 # Generate the hexagonal map once at server start
 hex_map = generate_hexagonal_map()
+
+# Array of roads
+roads_list = {}
 
 # Route to serve the main page
 @app.route('/')
@@ -53,9 +56,39 @@ def handle_get_grid():
 def handle_find_path(data):
     start = (data['start']['q'], data['start']['r'])
     goal = (data['goal']['q'], data['goal']['r'])
-    path = a_star_pathfinding(hex_map, start, goal)
+    path = pathfinding(hex_map, start, goal)
     socketio.emit('pathFound', {'path': path})
     print(f"Generated path from {start} to {goal}")
+
+@socketio.on('placeRoad')
+def handle_place_road(data):
+    # Extract the coordinates and road ID from the received data
+    coordinates = data['coordinates']
+    roadId = data['roadId']
+    
+    # Log the information in the terminal
+    print(f"Placing road with ID '{roadId}' at coordinates {coordinates}")
+    
+    # Add road to the roads list or perform other logic as needed
+    print(coordinates)
+    # Extract q and r values
+    q_value = coordinates['q']
+    r_value = coordinates['r']
+    # Build the key string in the format 'q_value,r_value'
+    key = f"{q_value},{r_value}"
+    # Get element from hex_map using the key
+    element = hex_map.get(key)
+
+    # Append road type to hex buildings list
+    element['buildings'].append(roadId)
+    element['movement_cost'] = movement_costs['road'];
+    print(element)
+
+    # Emit the updated grid data to the client
+    socketio.emit('gridData', list(hex_map.values()))
+
+    
+
 
 
 # Run the Flask app

@@ -96,3 +96,12 @@ socket.on('connect', () => {
 socket.on('connect_error', (error) => {
     console.error('Connection error:', error);
 });
+
+// Send server information about new road tile placement
+function placeRoad(axialCoordinates, roadId) {
+    // Log road placement information
+    console.log('Placing road:', roadId, 'at:', axialCoordinates);
+    
+    // Emit a socket event to the server with road placement data
+    socket.emit('placeRoad', { coordinates: axialCoordinates, roadId: roadId });
+}

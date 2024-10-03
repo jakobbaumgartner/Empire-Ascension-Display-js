@@ -13,7 +13,8 @@ const terrainTypes = {
     beach: 0xF9DBBA, // Beige color for beach
     grass: 0xCBE2B5, // Light green color for grass
     forest: 0x86AB89, // Darker green for forest
-    mountain: 0xA28B55 // Brown color for mountains
+    mountain: 0xA28B55, // Brown color for mountains
+    road: 0x505050 // Darker gray color for roads
 };
 
 // Function to create a hexagon graphic at a given position with axial coordinates (i, j, k)
@@ -92,7 +93,13 @@ function displayHexagonalGrid(hexContainer, hexGrid) {
     hexGrid.forEach((hexData, key) => {
         const { q, r, s } = hexData.axial_coordinates;
         const { x, y } = hexData.hex_cartesian;
-        const terrain = hexData.terrain_type;
+        var terrain = hexData.terrain_type;
+        const buildings = hexData.buildings
+
+        if (buildings && buildings.includes('road')) {
+            console.log(`Road found at (${q}, ${r}, ${s})`); // Log the road position
+            terrain = 'road'; // Set the terrain type to 'road' for hexagons with roads
+        }
 
         // Create the hexagon (function needs to use the x, y positions and other properties)
         const hexagon = createHexagon(x, y, q, r, s, terrain);

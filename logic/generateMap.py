@@ -26,7 +26,7 @@ movement_costs = {
     'grass': 3,
     'forest': 5,
     'mountain': 8,
-    'road': 0.5
+    'road': 0.25
 }
 
 terrain_descriptions = {

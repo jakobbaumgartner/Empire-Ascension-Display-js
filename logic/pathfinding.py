@@ -1,7 +1,9 @@
 import heapq
 import math
 
-def heuristic(a, b, hex_grid):
+def heuristic(a, b, hex_grid, use_heuristic=False):
+    if not use_heuristic:
+        return 0
     # Euclidean distance weighted by average movement cost
     dx = a[0] - b[0]
     dy = a[1] - b[1]
@@ -30,9 +32,7 @@ def get_neighbors(hex_grid, q, r):
             neighbors.append((neighbor_q, neighbor_r))
     return neighbors
 
-import heapq
-
-def a_star_pathfinding(hex_grid, start, goal):
+def pathfinding(hex_grid, start, goal, use_heuristic=True):
     start_q, start_r = start
     goal_q, goal_r = goal
 
@@ -40,21 +40,20 @@ def a_star_pathfinding(hex_grid, start, goal):
     heapq.heappush(open_set, (0, start))
     came_from = {}
     g_score = {start: 0}
-    f_score = {start: heuristic(start, goal, hex_grid)}
+    f_score = {start: heuristic(start, goal, hex_grid, use_heuristic)}
 
     while open_set:
         _, current = heapq.heappop(open_set)
 
         if current == goal:
             path = []
-            total_cost = 0  # Initialize total cost
+            total_cost = 0
             while current in came_from:
                 path.append(current)
                 total_cost += hex_grid[f"{current[0]},{current[1]}"]["movement_cost"]
                 current = came_from[current]
             path.append(start)
             path.reverse()
-            # Log the total cost
             print(f"Total path cost: {total_cost}")
             return path
 
@@ -64,8 +63,12 @@ def a_star_pathfinding(hex_grid, start, goal):
             if neighbor not in g_score or tentative_g_score < g_score[neighbor]:
                 came_from[neighbor] = current
                 g_score[neighbor] = tentative_g_score
-                f_score[neighbor] = tentative_g_score + heuristic(neighbor, goal, hex_grid)
+                f_score[neighbor] = tentative_g_score + heuristic(neighbor, goal, hex_grid, use_heuristic)
                 if neighbor not in [i[1] for i in open_set]:
                     heapq.heappush(open_set, (f_score[neighbor], neighbor))
 
     return None  # No path found
+
+# Example usage:
+# For Dijkstra: pathfinding(hex_grid, start, goal, use_heuristic=False)
+# For A*: pathfinding(hex_grid, start, goal, use_heuristic=True)

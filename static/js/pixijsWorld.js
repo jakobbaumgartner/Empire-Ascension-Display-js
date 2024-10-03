@@ -204,6 +204,12 @@ hexContainer.on('mousedown', (event) => {
                 selectedObject.axial_coordinates = hex.axial_coordinates;
                 console.log(hex);
             }
+            else if (selectedObject.object_type === 'road_segment')
+            {
+                console.log('Road')
+
+                placeRoad(hexagon.axial_coordinates, selectedObject.object_id)
+            }
 
           
             

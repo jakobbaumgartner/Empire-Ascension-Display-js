@@ -163,6 +163,7 @@ loadBattleUnits().then(() => {
             console.log('Road Segment selected');
             selectedObject.object_id = 'road';
             selectedObject.object_type = 'road_segment';
+            console.log(selectedObject)
             displayRoadStats()
         });
 
