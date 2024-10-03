@@ -58,6 +58,7 @@ def get_terrain_type(noise_value):
     return 'mountain'
 
 def generate_hexagonal_map():
+    print("Generating hexagonal map...")
     hex_grid = {}
 
     for col in range(grid_width):

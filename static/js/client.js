@@ -10,6 +10,7 @@ function apiMove(start, goal) {
     socket.emit('findPath', { start: start, goal: goal });
 }
 
+// Function to display the receieved path on the map
 socket.on('pathFound', (data) => {
     console.log('Received path:', data.path);
     displayPath(data.path);
@@ -27,8 +28,8 @@ function calculateLatency() {
     });
 }
 
-// Calculate latency every 1 seconds
-setInterval(calculateLatency, 1000);
+// Calculate latency every 2 seconds
+setInterval(calculateLatency, 2000);
 
 // Function to update the latency display
 function updateLatencyDisplay() {
