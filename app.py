@@ -4,6 +4,7 @@ import time
 import threading
 from logic.generateMap import generate_hexagonal_map, movement_costs
 from logic.pathfinding import pathfinding
+from logic.line_interpolation import line_interpolation
 
 
 app = Flask(__name__)
@@ -67,7 +68,8 @@ def handle_generate_road(data):
     end = (data['end']['q'], data['end']['r'])
     
     # Use pathfinding to find the path between start and end
-    road_path = pathfinding(hex_map, start, end, False, False)
+    # road_path = pathfinding(hex_map, start, end, False, False)
+    road_path = line_interpolation(start, end)
     
     # Iterate over the path and update each hexagon as a road
     for coord in road_path:
