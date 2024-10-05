@@ -52,42 +52,6 @@ def handle_get_grid():
     print("Sending grid data to client")
     socketio.emit('gridData', hex_map_list)
 
-# Function to handle the findPath event from the client, send path to client
-@socketio.on('findPath')
-def handle_find_path(data):
-    start = (data['start']['q'], data['start']['r'])
-    goal = (data['goal']['q'], data['goal']['r'])
-    path = pathfinding(hex_map, start, goal)
-    socketio.emit('pathFound', {'path': path})
-    print(f"Generated path from {start} to {goal}")
-
-
-@socketio.on('generateRoad')
-def handle_generate_road(data):
-    start = (data['start']['q'], data['start']['r'])
-    end = (data['end']['q'], data['end']['r'])
-    
-    # Use pathfinding to find the path between start and end
-    # road_path = pathfinding(hex_map, start, end, False, False)
-    road_path = line_interpolation(start, end)
-    
-    # Iterate over the path and update each hexagon as a road
-    for coord in road_path:
-        q, r = coord
-        key = f"{q},{r}"
-        element = hex_map.get(key)
-        
-        if element:
-            element['buildings'].append('road')
-            element['movement_cost'] = movement_costs['road']
-    
-    # Emit the updated grid data to the client
-    socketio.emit('gridData', list(hex_map.values()))
-    
-    print(f"Generated road from {start} to {end} with path: {road_path}")
-
-
-
 
 # Run the Flask app
 if __name__ == '__main__':

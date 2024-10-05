@@ -3,20 +3,6 @@ const socket = io(); // Initialize socket.io (default to web host of page)
 let lastServerTime = 0; // Variable to store the last received server time
 let latency = 0; // Variable to store the calculated latency
 
-function apiMove(start, goal) {
-    // Move the selected object to the move goal
-    console.log('Selected Object:', start);
-    console.log('Hexagon Tile:', goal)
-    socket.emit('findPath', { start: start, goal: goal });
-}
-
-// Function to display the receieved path on the map
-socket.on('pathFound', (data) => {
-    console.log('Received path:', data.path);
-    displayPath(data.path);
-});
-
-
 // Function to calculate latency
 function calculateLatency() {
     const startTime = Date.now();
@@ -92,36 +78,3 @@ socket.on('connect', () => {
     requestGridData(); // Request the grid data upon connection
 });
 
-// Log any connection errors
-socket.on('connect_error', (error) => {
-    console.error('Connection error:', error);
-});
-
-// Send server information about new road tile placement
-function placeRoad(axialCoordinates, roadId) {
-
-    // Check if this is start or end of road
-    if (!selectedObject.axial_coordinates) {
-        selectedObject.axial_coordinates = axialCoordinates;
-    } else {
-        console.log('Existing axial coordinates:', selectedObject.axial_coordinates);
-        console.log('Input axial coordinates:', axialCoordinates);
-
-        // Emit a socket event to the server with road generation data
-        socket.emit('generateRoad', {
-            start: selectedObject.axial_coordinates,
-            end: axialCoordinates
-        });
-
-        deselectSelectedObject()
-        
-    }
-
-
-    console.log(selectedObject)
-    // Log road placement information
-    // console.log('Placing road:', roadId, 'at:', axialCoordinates);
-    
-    // // Emit a socket event to the server with road placement data
-    // socket.emit('placeRoad', { coordinates: axialCoordinates, roadId: roadId });
-}
