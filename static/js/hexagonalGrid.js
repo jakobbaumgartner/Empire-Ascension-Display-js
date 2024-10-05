@@ -46,13 +46,43 @@ function createHexagon(x, y, hexData) {
     hexagon.buttonMode = true; // Change cursor on hover to indicate interactivity
     hexagon.clicked = false;
 
-    // Add event listeners for mouseover and mouseout
+    // Add popup display functionality to the hexagon
     hexagon.on('mousedown', (event) => {
         if (event.data.originalEvent.button === 0) { // Check if the left mouse button is pressed
             showHexagonPopup(event.data.originalEvent, hexData.hex_id); // Show the hexagon popup
         }
     });
     hexagon.on('mouseout', hideHexagonPopup);
+
+    // Add hexagon visual effects on mouseover and mouseout
+    hexagon.on('mouseout', (event) => {
+        hexagon.clear();
+        hexagon.beginFill(terrainTypes[hexData.terrain_type]);
+        hexagon.lineStyle(1, 0x000000, 0.2);
+        hexagon.drawPolygon([
+            -hexRadius, 0,
+            -hexRadius / 2, hexHeight / 2,
+            hexRadius / 2, hexHeight / 2,
+            hexRadius, 0,
+            hexRadius / 2, -hexHeight / 2,
+            -hexRadius / 2, -hexHeight / 2
+        ]);
+        hexagon.endFill();
+    });
+    hexagon.on('mouseover', (event) => {
+        hexagon.clear();
+        hexagon.beginFill(terrainTypes[hexData.terrain_type], 0.5); // Apply shadow effect with 50% opacity
+        hexagon.lineStyle(1, 0x000000, 0.2);
+        hexagon.drawPolygon([
+            -hexRadius, 0,
+            -hexRadius / 2, hexHeight / 2,
+            hexRadius / 2, hexHeight / 2,
+            hexRadius, 0,
+            hexRadius / 2, -hexHeight / 2,
+            -hexRadius / 2, -hexHeight / 2
+        ]);
+        hexagon.endFill();
+    });
 
     return hexagon; // Return the created hexagon
 }
