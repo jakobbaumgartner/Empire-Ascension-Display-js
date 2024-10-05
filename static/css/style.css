@@ -1,11 +1,69 @@
-        /* Resetting margins, padding, and hiding scrollbars */
-        body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            font-family: Arial, sans-serif;
-        }
-        /* Styling the container for the PixiJS canvas */
-        #hexCanvas {
-            display: block;
-        }
+/* MAIN APPLICATION */
+
+/* Resetting margins, padding, and hiding scrollbars */
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+/* Styling the container for the PixiJS canvas */
+#hexCanvas {
+    display: block;
+}
+
+/* STATS BANNER */
+
+.banner-container {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 5px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+}
+
+.banner-inner {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 5px 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.banner-number {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.banner-inner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.banner-item {
+    font-size: 14px;
+}
+
+#connectionStatus {
+    font-size: 18px;
+}
+
+#serverDelay {
+    color: #4a4a4a;
+}
+
+#bitcoinResource {
+    font-weight: bold;
+    color: #f7931a; /* Bitcoin orange color */
+}
+
+.banner-divider {
+    /* margin: 0 2px; */
+    color: #888; /* Adjust color as needed */
+}
