@@ -97,8 +97,9 @@ body {
     width: 100px;
     height: auto;
     object-fit: fill;
-    margin-right: 10px;
+    margin-right: 20px;
     border-radius: 10px; /* Adding rounded corners */
+    align-self: center; /* Center the image vertically in the container */
 }
 
 .hex-popup-text {
@@ -107,9 +108,9 @@ body {
 }
 
 .hex-popup-title {
-    font-size: 16px;
+    font-size: 22px;
     font-weight: bold;
-    color: #2a9d8f; /* Distinct color for the title */
+    /* color: #4e99e9;  */
     margin-bottom: 5px;
 }
 

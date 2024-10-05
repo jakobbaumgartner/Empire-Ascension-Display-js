@@ -10,7 +10,6 @@ function calculateLatency() {
         const endTime = Date.now();
         latency = endTime - startTime;
         updateLatencyDisplay();
-        
     });
 }
 
@@ -68,8 +67,7 @@ socket.on('server_time', (data) => {
 // Listener for 'gridData' event to receive the map data
 socket.on('gridData', (data) => {
     console.log('Received grid data:', data);
-    var hexGrid = createHexagonalGridData(data)
-    displayHexagonalGrid(hexContainer, hexGrid) 
+    displayHexagonalGrid(hexContainer, data); // Pass the received data directly to displayHexagonalGrid
 });
 
 // Log when connected to the server
@@ -77,4 +75,3 @@ socket.on('connect', () => {
     console.log('Connected to server');
     requestGridData(); // Request the grid data upon connection
 });
-

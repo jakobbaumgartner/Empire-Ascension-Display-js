@@ -49,7 +49,7 @@ function createHexagon(x, y, hexData) {
     // Add popup display functionality to the hexagon
     hexagon.on('mousedown', (event) => {
         if (event.data.originalEvent.button === 0) { // Check if the left mouse button is pressed
-            showHexagonPopup(event.data.originalEvent, hexData.hex_id); // Show the hexagon popup
+            showHexagonPopup(event.data.originalEvent, hexData); // Show the hexagon popup
         }
     });
     hexagon.on('mouseout', hideHexagonPopup);
@@ -87,43 +87,43 @@ function createHexagon(x, y, hexData) {
     return hexagon; // Return the created hexagon
 }
 
-var hexGrid = new Map(); // Initialize the hex grid data structure
+// var hexGrid = new Map(); // Initialize the hex grid data structure
 
-// Function to create a hexagonal grid data structure
-function createHexagonalGridData(gridData) {
-    console.log("Creating Hex Grid Data");
-    hexGrid.clear(); // Clear the global hexGrid to ensure it's empty before populating
+// // Function to create a hexagonal grid data structure
+// function createHexagonalGridData(gridData) {
+//     console.log("Creating Hex Grid Data");
+//     hexGrid.clear(); // Clear the global hexGrid to ensure it's empty before populating
 
-    // Loop through each hexagon data from the server
-    gridData.forEach(hexData => {
-        const { hex_id, description, hex_cartesian, axial_coordinates, terrain_type, state_hash, timestamp, buildings, sprite, movement_cost } = hexData;
+//     // Loop through each hexagon data from the server
+//     gridData.forEach(hexData => {
+//         const { hex_id, description, hex_cartesian, axial_coordinates, terrain_type, state_hash, timestamp, buildings, sprite, movement_cost } = hexData;
 
-        // Create a new hexData object with the received data
-        const newHexData = {
-            hex_id: hex_id,
-            description: description,
-            hex_cartesian: hex_cartesian,
-            axial_coordinates: axial_coordinates,
-            terrain_type: terrain_type,
-            state_hash: state_hash,
-            timestamp: timestamp,
-            buildings: buildings,
-            sprite: sprite,
-            movement_cost: movement_cost
-        };
+//         // Create a new hexData object with the received data
+//         const newHexData = {
+//             hex_id: hex_id,
+//             description: description,
+//             hex_cartesian: hex_cartesian,
+//             axial_coordinates: axial_coordinates,
+//             terrain_type: terrain_type,
+//             state_hash: state_hash,
+//             timestamp: timestamp,
+//             buildings: buildings,
+//             sprite: sprite,
+//             movement_cost: movement_cost
+//         };
 
-        // Store the newHexData in the map
-        hexGrid.set(hex_id, newHexData);
-    });
+//         // Store the newHexData in the map
+//         hexGrid.set(hex_id, newHexData);
+//     });
 
-    return hexGrid;
-}
+//     return hexGrid;
+// }
 
 // Function to show the popup with hexagon specs
-function showHexagonPopup(event, hexId) {
-    console.log(hexId)
-    const hexData = hexGrid.get(hexId); // Fetch data from hexGrid using hexId
+function showHexagonPopup(event, hexData) {
     console.log(hexData)
+    // const hexData = hexGrid.get(hexId); // Fetch data from hexGrid using hexId
+    console.log(event)
     const popup = document.createElement('div');
     popup.className = 'hex-popup';
     popup.innerHTML = `
@@ -131,7 +131,7 @@ function showHexagonPopup(event, hexId) {
         <div class="hex-popup-content">
             <img src="static/images/${hexData.terrain_type}.webp" alt="Hexagon Info" class="hex-popup-full-height-image">
             <div class="hex-popup-text">
-                <div class="hex-popup-title"><strong>Terrain type:</strong> ${hexData.terrain_type}</div>
+                <div class="hex-popup-title">${hexData.terrain_type.charAt(0).toUpperCase() + hexData.terrain_type.slice(1)}</div>
                 <div class="hex-popup-item"><strong>Description:</strong> ${hexData.description}</div>
                 <div class="hex-popup-item"><strong>Axial coordinates:</strong> [q: ${hexData.axial_coordinates.q}, r: ${hexData.axial_coordinates.r}]</div>
                 <div class="hex-popup-item"><strong>Cartesian coordinates:</strong> [x: ${hexData.hex_cartesian.x.toFixed(2)}, y: ${hexData.hex_cartesian.y.toFixed(2)}]</div>
@@ -174,30 +174,37 @@ function hideHexagonPopup() {
 }
 
 // Function to display the hexagonal grid on the screen
-function displayHexagonalGrid(hexContainer, hexGrid) {
-    console.log(hexGrid)
-    console.log("Displaying Hex Grid")
-    hexGrid.forEach((hexData, key) => {
-        const { q, r, s } = hexData.axial_coordinates;
-        const { x, y } = hexData.hex_cartesian;
-        var terrain = hexData.terrain_type;
-        const buildings = hexData.buildings
+function displayHexagonalGrid(hexContainer, gridData) {
+    console.log("Creating and Displaying Hex Grid Data");
 
-        if (buildings && buildings.includes('road')) {
-            console.log(`Road found at (${q}, ${r}, ${s})`); // Log the road position
-            terrain = 'road'; // Set the terrain type to 'road' for hexagons with roads
-        }
+    // Clear the hexContainer before adding new hexagons
+    hexContainer.removeChildren();
+
+    // Loop through each hexagon data from the server
+    gridData.forEach(hexData => {
+        const { hex_id, description, hex_cartesian, axial_coordinates, terrain_type, state_hash, timestamp, buildings, sprite, movement_cost } = hexData;
 
         // Create the hexagon (function needs to use the x, y positions and other properties)
-        const hexagon = createHexagon(x, y, hexData);
+        const hexagon = createHexagon(hex_cartesian.x, hex_cartesian.y, hexData);
 
-        // Store the hexagon sprite in the hexData object
-        hexData.sprite = hexagon;
+        // Store the hexagon data as a property of the hexagon graphic object
+        hexagon.hexData = {
+            hex_id: hex_id,
+            description: description,
+            hex_cartesian: hex_cartesian,
+            axial_coordinates: axial_coordinates,
+            terrain_type: terrain_type,
+            state_hash: state_hash,
+            timestamp: timestamp,
+            buildings: buildings,
+            sprite: sprite,
+            movement_cost: movement_cost
+        };
 
         // Add coordinate text to the hexagon for debugging
         if (0) {
             // Create text for coordinates
-            const coordText = new PIXI.Text(`${q},${r}`, {
+            const coordText = new PIXI.Text(`${axial_coordinates.q},${axial_coordinates.r}`, {
                 fontFamily: 'Arial',
                 fontSize: 8,
                 fill: 0x000000
@@ -212,5 +219,6 @@ function displayHexagonalGrid(hexContainer, hexGrid) {
         // Add the hexagon to the container
         hexContainer.addChild(hexagon);
     });
-}
 
+    console.log("Displaying Hex Grid");
+}
