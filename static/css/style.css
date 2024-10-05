@@ -67,3 +67,52 @@ body {
     /* margin: 0 2px; */
     color: #888; /* Adjust color as needed */
 }
+
+/* HEXAGON POPUP */
+.hex-popup {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    pointer-events: none; /* Make sure the popup doesn't interfere with mouse events */
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #333;
+}
+
+.hex-popup-inner {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.hex-popup-content {
+    display: flex;
+    align-items: flex-start;
+}
+.hex-popup-full-height-image {
+    width: 100px;
+    height: auto;
+    object-fit: fill;
+    margin-right: 10px;
+    border-radius: 10px; /* Adding rounded corners */
+}
+
+.hex-popup-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.hex-popup-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #2a9d8f; /* Distinct color for the title */
+    margin-bottom: 5px;
+}
+
+.hex-popup-item {
+    margin-bottom: 5px;
+}

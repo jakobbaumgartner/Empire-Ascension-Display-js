@@ -55,6 +55,9 @@ class HexagonalMap:
         if noise_value < 0.5:
             return 'forest'
         return 'mountain'
+    
+    # def update_hex(self, hex_id, new_data):
+        
 
     def generate_hexagonal_map(self):
         print("Generating hexagonal map...")
