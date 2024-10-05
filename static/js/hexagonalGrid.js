@@ -40,22 +40,6 @@ function createHexagon(x, y, hexData) {
     hexagon.endFill(); // End the fill operation
     hexagon.x = x; // Set the x position of the hexagon
     hexagon.y = y; // Set the y position of the hexagon
-    // hexagon.i = i; // Store the axial coordinate i
-    // hexagon.j = j; // Store the axial coordinate j
-    // hexagon.k = k; // Store the axial coordinate k
-
-    hexagon.hexData = {
-        hex_id: hexData.hex_id,
-        description: hexData.description,
-        hex_cartesian: hexData.hex_cartesian,
-        axial_coordinates: hexData.axial_coordinates,
-        terrain_type: hexData.terrain_type,
-        state_hash: hexData.state_hash,
-        timestamp: hexData.timestamp,
-        buildings: hexData.buildings,
-        movement_cost: hexData.movement_cost
-    };
-    // hexagon.terrain = terrain; // Store the terrain type for the hexagon
 
     // Make the hexagon interactive and set its initial clicked state to false
     hexagon.interactive = true;
@@ -65,7 +49,7 @@ function createHexagon(x, y, hexData) {
     // Add event listeners for mouseover and mouseout
     hexagon.on('mousedown', (event) => {
         if (event.data.originalEvent.button === 0) { // Check if the left mouse button is pressed
-            showHexagonPopup(event.data.originalEvent, { hex_data: hexagon.hexData });
+            showHexagonPopup(event.data.originalEvent, hexData.hex_id); // Show the hexagon popup
         }
     });
     hexagon.on('mouseout', hideHexagonPopup);
@@ -106,19 +90,22 @@ function createHexagonalGridData(gridData) {
 }
 
 // Function to show the popup with hexagon specs
-function showHexagonPopup(event, hexData) {
+function showHexagonPopup(event, hexId) {
+    console.log(hexId)
+    const hexData = hexGrid.get(hexId); // Fetch data from hexGrid using hexId
+    console.log(hexData)
     const popup = document.createElement('div');
     popup.className = 'hex-popup';
     popup.innerHTML = `
     <div class="hex-popup-inner">
         <div class="hex-popup-content">
-            <img src="static/images/${hexData.hex_data.terrain_type}.webp" alt="Hexagon Info" class="hex-popup-full-height-image">
+            <img src="static/images/${hexData.terrain_type}.webp" alt="Hexagon Info" class="hex-popup-full-height-image">
             <div class="hex-popup-text">
-                <div class="hex-popup-title"><strong>Terrain type:</strong> ${hexData.hex_data.terrain_type}</div>
-                <div class="hex-popup-item"><strong>Description:</strong> ${hexData.hex_data.description}</div>
-                <div class="hex-popup-item"><strong>Axial coordinates:</strong> [q: ${hexData.hex_data.axial_coordinates.q}, r: ${hexData.hex_data.axial_coordinates.r}]</div>
-                <div class="hex-popup-item"><strong>Cartesian coordinates:</strong> [x: ${hexData.hex_data.hex_cartesian.x.toFixed(2)}, y: ${hexData.hex_data.hex_cartesian.y.toFixed(2)}]</div>
-                <div class="hex-popup-item"><strong>Movement cost:</strong> ${hexData.hex_data.movement_cost}</div>
+                <div class="hex-popup-title"><strong>Terrain type:</strong> ${hexData.terrain_type}</div>
+                <div class="hex-popup-item"><strong>Description:</strong> ${hexData.description}</div>
+                <div class="hex-popup-item"><strong>Axial coordinates:</strong> [q: ${hexData.axial_coordinates.q}, r: ${hexData.axial_coordinates.r}]</div>
+                <div class="hex-popup-item"><strong>Cartesian coordinates:</strong> [x: ${hexData.hex_cartesian.x.toFixed(2)}, y: ${hexData.hex_cartesian.y.toFixed(2)}]</div>
+                <div class="hex-popup-item"><strong>Movement cost:</strong> ${hexData.movement_cost}</div>
             </div>
         </div>
     </div>
