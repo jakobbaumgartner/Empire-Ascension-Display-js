@@ -17,6 +17,9 @@ const terrainTypes = {
     road: 0x505050 // Darker gray color for roads
 };
 
+// Variable to store the grid hash
+let gridHash = 0;
+
 // Function to create a hexagon graphic at a given position with axial coordinates (i, j, k)
 function createHexagon(x, y, hexData) {
     const hexagon = new PIXI.Graphics(); // Create a new PIXI Graphics object for the hexagon
@@ -86,38 +89,6 @@ function createHexagon(x, y, hexData) {
 
     return hexagon; // Return the created hexagon
 }
-
-// var hexGrid = new Map(); // Initialize the hex grid data structure
-
-// // Function to create a hexagonal grid data structure
-// function createHexagonalGridData(gridData) {
-//     console.log("Creating Hex Grid Data");
-//     hexGrid.clear(); // Clear the global hexGrid to ensure it's empty before populating
-
-//     // Loop through each hexagon data from the server
-//     gridData.forEach(hexData => {
-//         const { hex_id, description, hex_cartesian, axial_coordinates, terrain_type, state_hash, timestamp, buildings, sprite, movement_cost } = hexData;
-
-//         // Create a new hexData object with the received data
-//         const newHexData = {
-//             hex_id: hex_id,
-//             description: description,
-//             hex_cartesian: hex_cartesian,
-//             axial_coordinates: axial_coordinates,
-//             terrain_type: terrain_type,
-//             state_hash: state_hash,
-//             timestamp: timestamp,
-//             buildings: buildings,
-//             sprite: sprite,
-//             movement_cost: movement_cost
-//         };
-
-//         // Store the newHexData in the map
-//         hexGrid.set(hex_id, newHexData);
-//     });
-
-//     return hexGrid;
-// }
 
 // Function to show the popup with hexagon specs
 function showHexagonPopup(event, hexData) {
@@ -221,4 +192,40 @@ function displayHexagonalGrid(hexContainer, gridData) {
     });
 
     console.log("Displaying Hex Grid");
+}
+
+// Function to set the grid hash value
+function setGridHash(hash) {
+    gridHash = hash;
+}
+
+// Function to update a specific hexagon in the grid
+function updateHex(hexData) {
+    const { hex_id, hex_cartesian, terrain_type, state_hash } = hexData;
+
+    // Find the hexagon in the container by its hex_id
+    const hexagon = hexContainer.children.find(child => child.hexData.hex_id === hex_id);
+
+    if (hexagon) {
+        // Update the hexagon's properties
+        hexagon.hexData = hexData;
+
+        // Clear the existing graphics and redraw the hexagon with the new terrain type
+        hexagon.clear();
+        hexagon.beginFill(terrainTypes[terrain_type]);
+        hexagon.lineStyle(1, 0x000000, 0.2);
+        hexagon.drawPolygon([
+            -hexRadius, 0,
+            -hexRadius / 2, hexHeight / 2,
+            hexRadius / 2, hexHeight / 2,
+            hexRadius, 0,
+            hexRadius / 2, -hexHeight / 2,
+            -hexRadius / 2, -hexHeight / 2
+        ]);
+        hexagon.endFill();
+
+        // Update the grid hash
+        gridHash += state_hash;
+        console.log(`Updated grid hash: ${gridHash}`);
+    }
 }

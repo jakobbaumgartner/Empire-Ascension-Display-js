@@ -5,6 +5,7 @@ import threading
 from logic.HexagonalMap import HexagonalMap 
 from logic.pathfinding import pathfinding
 from logic.line_interpolation import line_interpolation
+import random
 
 
 app = Flask(__name__)
@@ -51,9 +52,27 @@ def handle_get_grid():
     # Convert hex_map to a list of its values
     hex_map_list = list(hex_map.values())
     print("Sending grid data to client")
-    socketio.emit('gridData', hex_map_list)
+    socketio.emit('gridData', {'gridData': hex_map_list, 'gridHash': hex_map_instance.grid_hash})
 
+@socketio.on('getGridHash')
+def handle_get_grid_hash():
+    socketio.emit('gridHash', {'gridHash': hex_map_instance.grid_hash})
+
+def randomRoadGeneration():
+    while True:
+        # Select a random hex to update to a road
+        hex_id = random.choice(list(hex_map.keys()))
+        hex_map_instance.update_hex(hex_id, 'road')
+        
+        print(f"Updated hex {hex_id} to road")
+        print("New grid hash:", hex_map_instance.grid_hash)
+
+        # Send the updated hex to the client
+        socketio.emit('updateHex', hex_map[hex_id])
+        
+        time.sleep(1)
 
 # Run the Flask app
 if __name__ == '__main__':
+    threading.Thread(target=randomRoadGeneration, daemon=True).start()
     socketio.run(app, debug=True)

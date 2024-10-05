@@ -67,7 +67,11 @@ socket.on('server_time', (data) => {
 // Listener for 'gridData' event to receive the map data
 socket.on('gridData', (data) => {
     console.log('Received grid data:', data);
-    displayHexagonalGrid(hexContainer, data); // Pass the received data directly to displayHexagonalGrid
+    const { gridData, gridHash } = data;
+    displayHexagonalGrid(hexContainer, gridData); // Pass the received data directly to displayHexagonalGrid
+    setGridHash(gridHash); // Store the hash
+    console.log('Received grid hash:', gridHash);
+    g
 });
 
 // Log when connected to the server
@@ -75,3 +79,48 @@ socket.on('connect', () => {
     console.log('Connected to server');
     requestGridData(); // Request the grid data upon connection
 });
+
+// Listener for 'updateHex' event to update a specific hexagon
+socket.on('updateHex', (data) => {
+    console.log('Received update for hex:', data);
+    updateHex(data); // Call the updateHex function with the received data
+});
+
+let syncCountdown = 0;
+let syncInterval = null;
+
+// Function to request the grid hash from the server
+function requestGridHash() {
+    socket.emit('getGridHash');
+}
+
+// Listener for 'gridHash' event to receive the grid hash from the server
+socket.on('gridHash', (data) => {
+    console.log('Received grid hash:', data.gridHash, 'Client grid hash:', gridHash, 'Sync countdown:', syncCountdown);
+    const serverGridHash = data.gridHash;
+    if (serverGridHash !== gridHash) {
+        console.log('Grid hashes are out of sync');
+        if (syncCountdown === 0) {
+            syncCountdown = 3; // Start a 3-second countdown
+            syncInterval = setInterval(() => {
+                syncCountdown -= 0.5;
+                console.log(`Grid sync countdown: ${syncCountdown} seconds`);
+                if (syncCountdown <= 0) {
+                    clearInterval(syncInterval);
+                    syncCountdown = 0;
+                    console.log('Requesting full grid data from server');
+                    requestGridData(); // Request the entire grid data from the server
+                }
+            }, 500);
+        }
+    } else {
+        if (syncCountdown > 0) {
+            clearInterval(syncInterval);
+            syncCountdown = 0;
+            console.log('Grid hashes are back in sync');
+        }
+    }
+});
+
+// Request the grid hash from the server every 0.5 seconds
+setInterval(requestGridHash, 500);

@@ -1,6 +1,8 @@
 import math
 from noise import pnoise2
 import time
+import random
+
 
 class HexagonalMap:
     def __init__(self, grid_width=250, grid_height=100, hex_radius=15):
@@ -10,12 +12,16 @@ class HexagonalMap:
         self.grid_width = grid_width
         self.grid_height = grid_height
 
+        self.hex_grid = {}
+        self.grid_hash = 0000;
+
         self.terrain_types = {
             'water': 0x5B99C2,
             'beach': 0xF9DBBA,
             'grass': 0xCBE2B5,
             'forest': 0x86AB89,
-            'mountain': 0xA28B55
+            'mountain': 0xA28B55,
+            'road': 0x000000
         }
 
         self.movement_costs = {
@@ -32,7 +38,8 @@ class HexagonalMap:
             'beach': "Easy to traverse, allowing quick movement along the shoreline with no obstacles.",
             'grass': "Flat terrain that enables fast and efficient movement across open fields.",
             'forest': "Dense trees slow down movement, but provide good cover and concealment.",
-            'mountain': "Difficult terrain to traverse, but offers strategic high ground and defensive benefits."
+            'mountain': "Difficult terrain to traverse, but offers strategic high ground and defensive benefits.",
+            'road': "Provides the fastest and most efficient movement for units."
         }
 
     def oddq_to_axial(self, col, row):
@@ -61,7 +68,6 @@ class HexagonalMap:
 
     def generate_hexagonal_map(self):
         print("Generating hexagonal map...")
-        hex_grid = {}
 
         for col in range(self.grid_width):
             for row in range(self.grid_height):
@@ -84,9 +90,26 @@ class HexagonalMap:
                     'movement_cost': self.movement_costs[terrain]
                 }
 
-                hex_grid[hex_id] = hex_data
+                self.hex_grid[hex_id] = hex_data
+        
+        self.grid_hash = random.randint(1000, 9999)
 
-        return hex_grid
+        return self.hex_grid
+    
+    # Function to update the terrain type of a hex
+    def update_hex(self, hex_id, terrain_type):
+        hex_data = self.hex_grid[hex_id]
+        hex_data['description'] = self.terrain_descriptions[terrain_type]
+        hex_data['terrain_type'] = terrain_type
+        hex_data['movement_cost'] = self.movement_costs[terrain_type]
+        hex_data['timestamp'] = time.time()
+
+        # Generate a new state hash for the hex
+        hex_data['state_hash'] = random.randint(1000, 9999)
+        self.grid_hash = self.grid_hash + hex_data['state_hash']
+
+        return hex_data
+        
 
 # Example usage
 hex_map = HexagonalMap()
