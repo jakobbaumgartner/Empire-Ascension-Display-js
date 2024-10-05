@@ -2,7 +2,7 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO
 import time
 import threading
-from logic.generateMap import generate_hexagonal_map, movement_costs
+from logic.HexagonalMap import HexagonalMap 
 from logic.pathfinding import pathfinding
 from logic.line_interpolation import line_interpolation
 
@@ -13,8 +13,9 @@ socketio = SocketIO(app)
 # Add a variable to store the server start time
 server_start_time = time.time()
 
-# Generate the hexagonal map once at server start
-hex_map = generate_hexagonal_map()
+# Instantiate the HexagonalMap class and generate the map
+hex_map_instance = HexagonalMap()
+hex_map = hex_map_instance.generate_hexagonal_map()
 
 # Array of roads
 roads_list = {}
