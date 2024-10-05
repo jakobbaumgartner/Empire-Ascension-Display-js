@@ -142,9 +142,27 @@ function showHexagonPopup(event, hexId) {
     `;
     document.body.appendChild(popup);
 
-    // Position the popup next to the mouse cursor
-    popup.style.left = `${event.clientX + 10}px`;
-    popup.style.top = `${event.clientY + 10}px`;
+    // Get screen width and height
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+
+    // Check if the mouse is on the right side of the screen
+    if (event.clientX > screenWidth / 2) {
+        // Position the popup to the left of the mouse cursor
+        popup.style.left = `${event.clientX - popup.offsetWidth - 10}px`;
+    } else {
+        // Position the popup to the right of the mouse cursor
+        popup.style.left = `${event.clientX + 10}px`;
+    }
+
+    // Check if the mouse is on the bottom half of the screen
+    if (event.clientY > screenHeight / 2) {
+        // Position the popup above the mouse cursor
+        popup.style.top = `${event.clientY - popup.offsetHeight - 10}px`;
+    } else {
+        // Position the popup below the mouse cursor
+        popup.style.top = `${event.clientY + 10}px`;
+    }
 }
 
 // Function to hide the popup
