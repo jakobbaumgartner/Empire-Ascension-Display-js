@@ -112,7 +112,7 @@ socket.on('gridHash', (data) => {
                     requestGridData(); // Request the entire grid data from the server
                 }
             }, 500);
-        }
+        } 
     } else {
         if (syncCountdown > 0) {
             clearInterval(syncInterval);

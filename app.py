@@ -46,6 +46,7 @@ def handle_ping(client_time):
 def handle_connect():
     threading.Thread(target=send_server_time).start()
     print("Client connected")
+
 # Function to handle the getGrid event from the client, sends the hex map to the client
 @socketio.on('getGrid')
 def handle_get_grid():
@@ -54,10 +55,12 @@ def handle_get_grid():
     print("Sending grid data to client")
     socketio.emit('gridData', {'gridData': hex_map_list, 'gridHash': hex_map_instance.grid_hash})
 
+# Function to handle the updateHex event from the client, sends current hash of the grid
 @socketio.on('getGridHash')
 def handle_get_grid_hash():
     socketio.emit('gridHash', {'gridHash': hex_map_instance.grid_hash})
 
+# Test functon to update a hex to a road, runs every 5 seconds
 def randomRoadGeneration():
     while True:
         # Select a random hex to update to a road
