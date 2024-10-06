@@ -65,12 +65,11 @@ def randomRoadGeneration():
         hex_map_instance.update_hex(hex_id, 'road')
         
         print(f"Updated hex {hex_id} to road")
-        print("New grid hash:", hex_map_instance.grid_hash)
 
         # Send the updated hex to the client
         socketio.emit('updateHex', hex_map[hex_id])
         
-        time.sleep(1)
+        time.sleep(5)
 
 # Run the Flask app
 if __name__ == '__main__':

@@ -122,5 +122,5 @@ socket.on('gridHash', (data) => {
     }
 });
 
-// Request the grid hash from the server every 0.5 seconds
-setInterval(requestGridHash, 500);
+// Request the grid hash from the server every 5 seconds
+setInterval(requestGridHash, 5000);
