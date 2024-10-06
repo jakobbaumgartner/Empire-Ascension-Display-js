@@ -52,7 +52,7 @@ function createHexagon(x, y, hexData) {
     // Add popup display functionality to the hexagon
     hexagon.on('mousedown', (event) => {
         if (event.data.originalEvent.button === 0) { // Check if the left mouse button is pressed
-            showHexagonPopup(event.data.originalEvent, hexData); // Show the hexagon popup
+            showHexagonPopup(event.data.originalEvent, hexagon.hexData); // Show the hexagon popup
         }
     });
     hexagon.on('mouseout', hideHexagonPopup);
@@ -60,7 +60,7 @@ function createHexagon(x, y, hexData) {
     // Add hexagon visual effects on mouseover and mouseout
     hexagon.on('mouseout', (event) => {
         hexagon.clear();
-        hexagon.beginFill(terrainTypes[hexData.terrain_type]);
+        hexagon.beginFill(terrainTypes[hexagon.hexData.terrain_type]);
         hexagon.lineStyle(1, 0x000000, 0.2);
         hexagon.drawPolygon([
             -hexRadius, 0,
@@ -74,7 +74,7 @@ function createHexagon(x, y, hexData) {
     });
     hexagon.on('mouseover', (event) => {
         hexagon.clear();
-        hexagon.beginFill(terrainTypes[hexData.terrain_type], 0.5); // Apply shadow effect with 50% opacity
+        hexagon.beginFill(terrainTypes[hexagon.hexData.terrain_type], 0.5); // Apply shadow effect with 50% opacity
         hexagon.lineStyle(1, 0x000000, 0.2);
         hexagon.drawPolygon([
             -hexRadius, 0,
